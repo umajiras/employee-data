@@ -478,13 +478,14 @@ function loadSession(){
   }
 }
 
-/* ===== INIT ===== */
+
 window.onload = ()=>{
+  document.body.style.display="block"; // 👈 บังคับโชว์ก่อน
+
   if(localStorage.getItem("session")){
     loadSession();
   }else{
     showScreen("screenChoice");
-    document.body.style.display="block";
   }
 }
 </script>
