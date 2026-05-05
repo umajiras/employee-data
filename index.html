@@ -121,7 +121,7 @@ tr:hover td { background: #f7f9fc; }
 .hidden { display: none !important; }
 </style>
 </head>
-<body style="display:none;">
+<body>
 
 <!-- หน้าเลือก -->
 <div id="screenChoice" class="container">
@@ -489,5 +489,83 @@ window.onload = ()=>{
   }
 }
 </script>
+
+<script>
+/* ===== SHOW SCREEN ===== */
+function showScreen(id){
+  const screens = ["screenChoice","screenEmployee","screenAdmin","screenMain"];
+  screens.forEach(s=>{
+    const el = document.getElementById(s);
+    if(el) el.classList.add("hidden");
+  });
+  document.getElementById(id).classList.remove("hidden");
+}
+
+/* ===== SETUP MAIN ===== */
+function setupMainScreen(emp=null){
+  showScreen("screenMain");
+
+  if(currentRole === "admin"){
+    document.getElementById("roleBadge").innerText = "ADMIN";
+    document.getElementById("roleBadge").className = "badge badge-admin";
+    document.getElementById("adminBar").classList.remove("hidden");
+    document.getElementById("userNameLabel").innerText = "";
+  }else{
+    document.getElementById("roleBadge").innerText = "EMPLOYEE";
+    document.getElementById("roleBadge").className = "badge badge-emp";
+    document.getElementById("adminBar").classList.add("hidden");
+    document.getElementById("userNameLabel").innerText = emp?.name || "";
+  }
+}
+
+/* ===== LOGOUT ===== */
+function logout(){
+  localStorage.removeItem("session");
+  location.reload();
+}
+
+/* ===== RENDER TABLE ===== */
+function renderTable(data){
+  const tbody = document.getElementById("tbody");
+
+  if(!data || data.length === 0){
+    tbody.innerHTML = `<tr><td colspan="11" class="no-data">ไม่พบข้อมูล</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(d=>`
+    <tr>
+      <td>-</td>
+      <td>${d.id || ""}</td>
+      <td>${d.name || ""}</td>
+      <td>${d.nickname || ""}</td>
+      <td>${d.phone || ""}</td>
+      <td>${d.ec1_name || ""}</td>
+      <td>${d.ec1_relation || ""}</td>
+      <td>${d.ec1_phone || ""}</td>
+      <td>${d.ec2_name || ""}</td>
+      <td>${d.ec2_relation || ""}</td>
+      <td>${d.ec2_phone || ""}</td>
+    </tr>
+  `).join("");
+
+  document.getElementById("countLabel").innerText = `ทั้งหมด ${data.length} รายการ`;
+}
+
+/* ===== FILTER ===== */
+function filterTable(){
+  const keyword = document.getElementById("searchInput").value.toLowerCase();
+
+  const filtered = allEmployees.filter(e =>
+    (e.id||"").toLowerCase().includes(keyword) ||
+    (e.name||"").toLowerCase().includes(keyword) ||
+    (e.nickname||"").toLowerCase().includes(keyword) ||
+    (e.phone||"").toLowerCase().includes(keyword)
+  );
+
+  renderTable(filtered);
+}
+</script>
+
 </body>
 </html>
