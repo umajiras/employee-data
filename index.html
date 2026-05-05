@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบข้อมูลพนักงาน</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Sarabun', sans-serif; background: #f0f4f8; color: #333; }
+.container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+
+/* LOGIN */
+.login-wrap { display: flex; align-items: center; justify-content: center; min-height: 480px; }
+.login-box { background: white; border-radius: 14px; padding: 32px; width: 100%; max-width: 420px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08); border: 1px solid #e8edf3; }
+.login-box .brand { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.login-box .brand svg { width: 22px; height: 22px; flex-shrink: 0; color: #185FA5; }
+.login-box .brand span { font-size: 17px; font-weight: 600; color: #1a2332; }
+.login-box .sub { font-size: 13px; color: #888; margin-bottom: 24px; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12px; color: #666; margin-bottom: 5px; font-weight: 500; }
+.field input { width: 100%; padding: 10px 12px; border: 1px solid #cdd5e0; border-radius: 8px;
+  font-size: 14px; background: white; color: #333; transition: .2s; }
+.field input:focus { outline: none; border-color: #185FA5; box-shadow: 0 0 0 3px rgba(24,95,165,0.12); }
+.error-msg { font-size: 13px; color: #A32D2D; background: #FCEBEB; padding: 9px 12px;
+  border-radius: 8px; margin-top: 10px; display: none; border: 1px solid #F09595; }
+.choice-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+.choice-btn { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 10px;
+  border: 1px solid #dde3ec; background: white; cursor: pointer; font-size: 14px; font-weight: 500;
+  color: #333; transition: .15s; }
+.choice-btn:hover { background: #f7f9fc; border-color: #185FA5; }
+.choice-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.choice-btn.primary-choice { background: #E6F1FB; border-color: #B5D4F4; color: #0C447C; }
+.choice-btn.primary-choice:hover { background: #cce3f4; }
+.login-actions { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px;
+  border: 1px solid #cdd5e0; background: white; cursor: pointer; font-size: 13px; font-weight: 600;
+  color: #444; transition: .15s; white-space: nowrap; }
+.btn:hover { background: #f5f7fa; }
+.btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+.btn-blue { background: #185FA5; border-color: #185FA5; color: white; }
+.btn-blue:hover { background: #0C447C; border-color: #0C447C; }
+.btn-green { background: #3B6D11; border-color: #3B6D11; color: white; }
+.btn-green:hover { background: #27500A; border-color: #27500A; }
+.btn-amber { background: #854F0B; border-color: #854F0B; color: white; padding: 5px 10px; font-size: 12px; }
+.btn-amber:hover { background: #633806; }
+.btn-red { background: #A32D2D; border-color: #A32D2D; color: white; padding: 5px 10px; font-size: 12px; }
+.btn-red:hover { background: #791F1F; }
+.btn-gray { background: #f5f7fa; border-color: #cdd5e0; color: #555; }
+.btn-gray:hover { background: #eaecf0; }
+
+/* TOPBAR */
+.topbar { display: flex; align-items: center; justify-content: space-between; background: white;
+  padding: 12px 16px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-left svg { width: 22px; height: 22px; color: #185FA5; }
+.logo-text { font-size: 15px; font-weight: 600; color: #1a2332; }
+.badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.badge-admin { background: #E6F1FB; color: #0C447C; border: 1px solid #B5D4F4; }
+.badge-emp { background: #EAF3DE; color: #27500A; border: 1px solid #C0DD97; }
+.user-name { font-size: 13px; color: #666; }
+
+/* TOOLBAR */
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: white;
+  padding: 10px 14px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 12px; }
+.search-wrap { flex: 1; min-width: 200px; position: relative; }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px; color: #aaa; pointer-events: none; }
+.search-wrap input { width: 100%; padding: 9px 12px 9px 36px; border: 1px solid #cdd5e0;
+  border-radius: 8px; font-size: 13px; color: #333; background: white; transition: .2s; }
+.search-wrap input:focus { outline: none; border-color: #185FA5; box-shadow: 0 0 0 3px rgba(24,95,165,0.12); }
+
+/* TABLE */
+.count { font-size: 12px; color: #888; margin-bottom: 8px; }
+.table-wrap { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  overflow-x: auto; cursor: grab; border: 1px solid #e8edf3; }
+.table-wrap:active { cursor: grabbing; }
+table { width: max-content; min-width: 100%; border-collapse: collapse; font-size: 13px; }
+thead { background: #185FA5; }
+th { padding: 10px 12px; text-align: left; white-space: nowrap; color: white; font-weight: 600; font-size: 12px; }
+td { padding: 9px 12px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; white-space: nowrap; color: #333; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #f7f9fc; }
+.no-data { text-align: center; padding: 40px; color: #aaa; }
+.action-btns { display: flex; gap: 4px; }
+
+/* MODAL */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 200; justify-content: center; align-items: center; }
+.modal-bg.show { display: flex; }
+.modal { background: white; border-radius: 14px; padding: 28px; width: 100%; max-width: 560px;
+  max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+.modal-title { display: flex; align-items: center; gap: 8px; color: #185FA5; font-size: 16px;
+  font-weight: 600; margin-bottom: 20px; }
+.modal-title svg { width: 20px; height: 20px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grid .full { grid-column: 1 / -1; }
+.modal label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; font-weight: 500; }
+.modal input { width: 100%; padding: 9px 12px; border: 1px solid #cdd5e0; border-radius: 8px;
+  font-size: 14px; color: #333; transition: .2s; }
+.modal input:focus { outline: none; border-color: #185FA5; box-shadow: 0 0 0 3px rgba(24,95,165,0.12); }
+.modal input[readonly] { background: #f5f5f5; color: #999; cursor: not-allowed; }
+.divider { grid-column: 1/-1; border-top: 1px dashed #e0e4ea; margin: 4px 0; }
+.section-lbl { grid-column: 1/-1; font-size: 13px; font-weight: 600; color: #185FA5;
+  display: flex; align-items: center; gap: 6px; }
+.section-lbl svg { width: 15px; height: 15px; }
+.modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px;
+  border-top: 1px solid #eee; padding-top: 16px; }
+
+/* LOADING OVERLAY */
+.loading { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.7);
+  z-index: 300; justify-content: center; align-items: center; }
+.loading.show { display: flex; }
+.spinner { width: 36px; height: 36px; border: 3px solid #e0e6f0; border-top-color: #185FA5;
+  border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body style="display:none;">
+
+<!-- หน้าเลือก -->
+<div id="screenChoice" class="container">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <span>ระบบข้อมูลพนักงาน</span>
+      </div>
+      <p class="sub">กรุณาเลือกประเภทการเข้าใช้งาน</p>
+      <div class="choice-btns">
+        <button class="choice-btn primary-choice" onclick="showScreen('screenEmployee')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <div style="text-align:left">
+            <div>พนักงาน</div>
+            <div style="font-size:11px;font-weight:400;color:#185FA5;opacity:.8">ดูและแก้ไขข้อมูลตัวเอง</div>
+          </div>
+        </button>
+        <button class="choice-btn" onclick="showScreen('screenAdmin')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div style="text-align:left">
+            <div>Admin</div>
+            <div style="font-size:11px;font-weight:400;color:#888">จัดการข้อมูลพนักงานทั้งหมด</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- หน้า Login พนักงาน -->
+<div id="screenEmployee" class="container hidden">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>เข้าสู่ระบบพนักงาน</span>
+      </div>
+      <p class="sub">กรอกรหัสพนักงานและเบอร์โทรของคุณ</p>
+      <div class="field">
+        <label>รหัสพนักงาน</label>
+        <input type="text" id="empLoginId" placeholder="เช่น 4003"
+          onkeydown="if(event.key==='Enter') loginEmployee()">
+      </div>
+      <div class="field">
+        <label>เบอร์โทรศัพท์</label>
+        <input type="text" id="empLoginPhone" placeholder="เช่น 0812345678"
+          onkeydown="if(event.key==='Enter') loginEmployee()">
+      </div>
+      <div class="error-msg" id="empError">รหัสหรือเบอร์โทรไม่ถูกต้อง กรุณาลองใหม่</div>
+      <div class="login-actions">
+        <button class="btn btn-blue" onclick="loginEmployee()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          เข้าสู่ระบบ
+        </button>
+        <button class="btn btn-gray" onclick="showScreen('screenChoice')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          ย้อนกลับ
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- หน้า Login Admin -->
+<div id="screenAdmin" class="container hidden">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>เข้าสู่ระบบ Admin</span>
+      </div>
+      <p class="sub">กรอกรหัสลับ Admin เพื่อจัดการข้อมูลพนักงานทั้งหมด</p>
+      <div class="field">
+        <label>รหัสลับ Admin</label>
+        <input type="password" id="adminPwd" placeholder="••••••••"
+          onkeydown="if(event.key==='Enter') loginAdmin()">
+      </div>
+      <div class="error-msg" id="adminError">รหัสผ่านไม่ถูกต้อง</div>
+      <div class="login-actions">
+        <button class="btn btn-blue" onclick="loginAdmin()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          เข้าสู่ระบบ
+        </button>
+        <button class="btn btn-gray" onclick="showScreen('screenChoice')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          ย้อนกลับ
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- หน้าหลัก -->
+<div id="screenMain" class="container hidden">
+  <div class="topbar">
+    <div class="topbar-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <span class="logo-text">ระบบข้อมูลพนักงาน</span>
+      <span class="badge" id="roleBadge"></span>
+      <span id="userNameLabel" class="user-name"></span>
+    </div>
+    <button class="btn btn-gray" onclick="logout()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      ออกจากระบบ
+    </button>
+  </div>
+
+  <div class="toolbar hidden" id="adminBar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="ค้นหา รหัส / ชื่อ / ชื่อเล่น / เบอร์..." oninput="filterTable()">
+    </div>
+    <button class="btn btn-blue" onclick="loadAll()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg>
+      ดูทั้งหมด
+    </button>
+    <button class="btn btn-green" onclick="openAdd()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+      เพิ่มพนักงาน
+    </button>
+  </div>
+
+  <div class="count" id="countLabel"></div>
+  <div class="table-wrap" id="tableWrap">
+    <table>
+      <thead>
+        <tr>
+          <th>จัดการ</th>
+          <th>รหัส</th><th>ชื่อ-นามสกุล</th><th>ชื่อเล่น</th><th>เบอร์โทร</th>
+          <th>ผู้ติดต่อฉุกเฉิน 1</th><th>ความสัมพันธ์</th><th>เบอร์ฉุกเฉิน 1</th>
+          <th>ผู้ติดต่อฉุกเฉิน 2</th><th>ความสัมพันธ์</th><th>เบอร์ฉุกเฉิน 2</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="11" class="no-data">กำลังโหลดข้อมูล...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal แก้ไข/เพิ่ม -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-title">
+      <svg id="modalIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <span id="modalTitleText">แก้ไขข้อมูล</span>
+    </div>
+    <div class="form-grid">
+      <div><label>รหัสพนักงาน</label><input id="fId" type="text" readonly></div>
+      <div><label>ชื่อเล่น</label><input id="fNickname" type="text"></div>
+      <div class="full"><label>ชื่อ-นามสกุล</label><input id="fName" type="text"></div>
+      <div class="full"><label>เบอร์โทรศัพท์</label><input id="fPhone" type="text"></div>
+      <div class="divider"></div>
+      <div class="section-lbl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        ผู้ติดต่อฉุกเฉิน 1
+      </div>
+      <div class="full"><label>ชื่อ-นามสกุล</label><input id="fEc1Name" type="text"></div>
+      <div><label>ความสัมพันธ์</label><input id="fEc1Rel" type="text"></div>
+      <div><label>เบอร์โทร</label><input id="fEc1Phone" type="text"></div>
+      <div class="divider"></div>
+      <div class="section-lbl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        ผู้ติดต่อฉุกเฉิน 2
+      </div>
+      <div class="full"><label>ชื่อ-นามสกุล</label><input id="fEc2Name" type="text"></div>
+      <div><label>ความสัมพันธ์</label><input id="fEc2Rel" type="text"></div>
+      <div><label>เบอร์โทร</label><input id="fEc2Phone" type="text"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-gray" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        ยกเลิก
+      </button>
+      <button class="btn btn-blue" onclick="saveEmployee()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        บันทึก
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+</div>
+
+<script>
+let currentRole = null;
+let adminPassword = null;
+let currentEmpId = null;
+let currentEmpPhone = null;
+let currentRow = null;
+let isAdding = false;
+let allEmployees = [];
+
+/* ===== LOADING ===== */
+function showLoading(v){
+  document.getElementById('loading').classList[v?'add':'remove']('show');
+}
+
+/* ===== API CALL ===== */
+async function api(url, method="GET", body=null){
+  const res = await fetch(url,{
+    method,
+    headers: { "Content-Type":"application/json" },
+    body: body ? JSON.stringify(body) : null
+  });
+  return res.json();
+}
+
+/* ===== LOGIN EMP ===== */
+async function loginEmployee(){
+  const id = empLoginId.value.trim();
+  const phone = empLoginPhone.value.trim();
+
+  if(!id || !phone){
+    alert("กรอกข้อมูลก่อน");
+    return;
+  }
+
+  showLoading(true);
+
+  try{
+    const emp = await api("/api/login", "POST", {id, phone});
+
+    showLoading(false);
+
+    if(!emp){
+      empError.style.display="block";
+      return;
+    }
+
+    currentRole="employee";
+    currentEmpId=id;
+    currentEmpPhone=phone;
+
+    localStorage.setItem("session", JSON.stringify({role:"employee",id,phone}));
+    setupMainScreen(emp);
+
+  }catch(e){
+    showLoading(false);
+    alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
+    console.error(e);
+  }
+}
+
+/* ===== LOGIN ADMIN ===== */
+async function loginAdmin(){
+  const pwd = adminPwd.value;
+  if(!pwd){ alert("กรอกรหัสผ่านก่อน"); return; }
+
+  showLoading(true);
+
+  try{
+    const result = await api("/api/checkAdmin", "POST", {password: pwd});
+    showLoading(false);
+
+    if(!result || !result.ok){
+      adminError.style.display="block";
+      return;
+    }
+
+    currentRole="admin";
+    adminPassword=pwd;
+    localStorage.setItem("session", JSON.stringify({role:"admin", password: pwd}));
+    setupMainScreen();
+    loadAll();
+
+  }catch(e){
+    showLoading(false);
+    alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
+    console.error(e);
+  }
+}
+
+/* ===== LOAD ALL ===== */
+async function loadAll(){
+  showLoading(true);
+  const result = await api("/api/getAll");
+  showLoading(false);
+
+  allEmployees = result.data || [];
+  renderTable(allEmployees);
+}
+
+/* ===== SAVE ===== */
+async function saveEmployee(){
+  const data={
+    id:fId.value.trim(),
+    name:fName.value.trim(),
+    nickname:fNickname.value.trim(),
+    phone:fPhone.value.trim(),
+    ec1_name:fEc1Name.value.trim(),
+    ec1_relation:fEc1Rel.value.trim(),
+    ec1_phone:fEc1Phone.value.trim(),
+    ec2_name:fEc2Name.value.trim(),
+    ec2_relation:fEc2Rel.value.trim(),
+    ec2_phone:fEc2Phone.value.trim(),
+    row: currentRow,
+    password: adminPassword
+  };
+
+  if(!data.id || !data.name){ alert("กรุณากรอกรหัสและชื่อ"); return; }
+
+  showLoading(true);
+
+  let res;
+  if(isAdding){
+    res = await api("/api/add","POST",data);
+  }else{
+    res = await api("/api/update","POST",data);
+  }
+
+  showLoading(false);
+  alert(res.success || res.error);
+
+  closeModal();
+  loadAll();
+}
+
+/* ===== DELETE ===== */
+async function delEmployee(id){
+  if(!confirm("ลบพนักงานรหัส " + id + " ?")) return;
+
+  showLoading(true);
+  const res = await api("/api/delete","POST",{id, password: adminPassword});
+  showLoading(false);
+
+  alert(res.success || res.error);
+  loadAll();
+}
+
+/* ===== SESSION ===== */
+function loadSession(){
+  const s = JSON.parse(localStorage.getItem("session"));
+  if(!s) return;
+
+  if(s.role==="employee"){
+    currentRole="employee";
+    currentEmpId=s.id;
+    currentEmpPhone=s.phone;
+    // ดึงข้อมูลพนักงานคนนั้นมาแสดง
+    api("/api/login","POST",{id:s.id, phone:s.phone}).then(emp=>{
+      if(emp){ setupMainScreen(emp); }
+      else { localStorage.removeItem("session"); showScreen("screenChoice"); }
+    }).catch(()=>{ localStorage.removeItem("session"); showScreen("screenChoice"); });
+  }else{
+    currentRole="admin";
+    adminPassword=s.password;
+    setupMainScreen();
+    loadAll();
+  }
+}
+
+/* ===== INIT ===== */
+window.onload = ()=>{
+  if(localStorage.getItem("session")){
+    loadSession();
+  }else{
+    showScreen("screenChoice");
+    document.body.style.display="block";
+  }
+}
+</script>
+</body>
+</html>
