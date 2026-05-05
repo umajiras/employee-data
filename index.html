@@ -473,43 +473,87 @@ function closeModal(){
 
 /* ===== SAVE ===== */
 async function saveEmployee(){
-  const data={
-    id:fId.value.trim(),name:fName.value.trim(),nickname:fNickname.value.trim(),phone:fPhone.value.trim(),
-    ec1_name:fEc1Name.value.trim(),ec1_relation:fEc1Rel.value.trim(),ec1_phone:fEc1Phone.value.trim(),
-    ec2_name:fEc2Name.value.trim(),ec2_relation:fEc2Rel.value.trim(),ec2_phone:fEc2Phone.value.trim(),
-    row:currentRow,password:adminPassword
+  const data = {
+    id: fId.value.trim(),
+    name: fName.value.trim(),
+    nickname: fNickname.value.trim(),
+    phone: fPhone.value.trim(),
+    ec1_name: fEc1Name.value.trim(),
+    ec1_relation: fEc1Rel.value.trim(),
+    ec1_phone: fEc1Phone.value.trim(),
+    ec2_name: fEc2Name.value.trim(),
+    ec2_relation: fEc2Rel.value.trim(),
+    ec2_phone: fEc2Phone.value.trim(),
+    row: currentRow,
+    password: adminPassword
   };
-  if(!data.id||!data.name){alert("กรุณากรอกรหัสและชื่อ");return;}
-  showLoading(true);
-  try{
-    const res=await api(isAdding?"/api/add":"/api/update","POST",data);
-    showLoading(false);
-    alert(res.success||res.error);
-    if(res.success){
-    closeModal();
 
-    if(currentRole === "admin"){
-        loadAll();   // admin เห็นทั้งหมด
+  if(!data.id || !data.name){
+    alert("กรุณากรอกรหัสและชื่อ");
+    return;
+  }
+
+  showLoading(true);
+
+  try{
+    let body;
+
+    // 🔥 แยก add กับ update
+    if(isAdding){
+      body = {
+        password: adminPassword,
+        data: {
+          id: data.id,
+          name: data.name,
+          nickname: data.nickname,
+          phone: data.phone,
+          ec1_name: data.ec1_name,
+          ec1_relation: data.ec1_relation,
+          ec1_phone: data.ec1_phone,
+          ec2_name: data.ec2_name,
+          ec2_relation: data.ec2_relation,
+          ec2_phone: data.ec2_phone
+        }
+      };
     }else{
+      body = data; // update ใช้แบบเดิม
+    }
+
+    const res = await api(isAdding ? "/api/add" : "/api/update", "POST", body);
+
+    showLoading(false);
+    alert(res.success || res.error);
+
+    if(res.success){
+      closeModal();
+
+      if(currentRole === "admin"){
+        loadAll();   // admin เห็นทั้งหมด
+      }else{
         // employee → กลับไปเห็นตัวเอง
         const emp = {
-        id: fId.value,
-        name: fName.value,
-        nickname: fNickname.value,
-        phone: fPhone.value,
-        ec1_name: fEc1Name.value,
-        ec1_relation: fEc1Rel.value,
-        ec1_phone: fEc1Phone.value,
-        ec2_name: fEc2Name.value,
-        ec2_relation: fEc2Rel.value,
-        ec2_phone: fEc2Phone.value,
-        row: currentRow
+          id: data.id,
+          name: data.name,
+          nickname: data.nickname,
+          phone: data.phone,
+          ec1_name: data.ec1_name,
+          ec1_relation: data.ec1_relation,
+          ec1_phone: data.ec1_phone,
+          ec2_name: data.ec2_name,
+          ec2_relation: data.ec2_relation,
+          ec2_phone: data.ec2_phone,
+          row: currentRow
         };
 
         setupMainScreen(emp);
+      }
     }
-    }
-  }catch(e){showLoading(false);alert("เกิดข้อผิดพลาด");console.error(e);}
+
+  }catch(e){
+    showLoading(false);
+    alert("เกิดข้อผิดพลาด");
+    console.error(e);
+  }
 }
 
 /* ===== DELETE ===== */
