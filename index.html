@@ -400,7 +400,9 @@ function renderTable(data){
     return;
   }
   const isAdmin=currentRole==="admin";
-  tbody.innerHTML=data.map(d=>`
+  const cleanData = data.filter(d => d && d.id);
+
+  tbody.innerHTML=cleanData.map(d=>`
     <tr>
       <td>
         <div class="action-btns">
@@ -597,7 +599,7 @@ window.onload=()=>{
 
 
 function openEditById(id){
-  const emp = allEmployees.find(e => e.id == id);
+  const emp = allEmployees.find(e => e && e.id == id);
 
   if(!emp){
     alert("ไม่พบข้อมูล");
