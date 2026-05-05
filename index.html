@@ -110,7 +110,7 @@ tr:hover td { background: #f7f9fc; }
 .hidden { display: none !important; }
 </style>
 </head>
-<body>
+<body style="display:none;">
 
 <!-- หน้าเลือก -->
 <div id="screenChoice" class="container">
@@ -571,7 +571,11 @@ async function delEmployee(id,row){
 /* ===== SESSION ===== */
 function loadSession(){
   const s = JSON.parse(localStorage.getItem("session"));
-  if(!s) return;
+  if(!s){
+    showScreen("screenChoice");
+    document.body.style.display = "block";
+    return;
+  }
 
   if(s.role === "employee"){
     currentRole="employee";
@@ -581,11 +585,12 @@ function loadSession(){
     api("/api/login","POST",{id:s.id,phone:s.phone})
       .then(emp=>{
         if(emp){
-          setupMainScreen(emp); // ✅ เข้าเลย
+          setupMainScreen(emp);
         }else{
           localStorage.removeItem("session");
           showScreen("screenChoice");
         }
+        document.body.style.display = "block"; // 👈 โชว์ตรงนี้
       });
 
   }else{
@@ -594,6 +599,8 @@ function loadSession(){
 
     setupMainScreen();
     loadAll();
+
+    document.body.style.display = "block"; // 👈 admin ก็โชว์ตรงนี้
   }
 }
 
@@ -650,13 +657,11 @@ window.onload = () => {
   const session = localStorage.getItem("session");
 
   if(session){
-    // ✅ ยังไม่โชว์หน้าอะไร รอ loadSession เลย
-    loadSession();
+    loadSession(); // ❗ ยังไม่โชว์ body
   }else{
     showScreen("screenChoice");
+    document.body.style.display = "block"; // 👈 โชว์ตอนนี้
   }
-
-  document.body.style.display = "block"; // 👈 ย้ายมาท้ายสุด
 };
 
 
