@@ -570,17 +570,30 @@ async function delEmployee(id,row){
 
 /* ===== SESSION ===== */
 function loadSession(){
-  const s=JSON.parse(localStorage.getItem("session"));
-  if(!s)return;
-  if(s.role==="employee"){
-    currentRole="employee";currentEmpId=s.id;currentEmpPhone=s.phone;
-    api("/api/login","POST",{id:s.id,phone:s.phone}).then(emp=>{
-      if(emp){setupMainScreen(emp);}
-      else{localStorage.removeItem("session");showScreen("screenChoice");}
-    }).catch(()=>{localStorage.removeItem("session");showScreen("screenChoice");});
+  const s = JSON.parse(localStorage.getItem("session"));
+  if(!s) return;
+
+  if(s.role === "employee"){
+    currentRole="employee";
+    currentEmpId=s.id;
+    currentEmpPhone=s.phone;
+
+    api("/api/login","POST",{id:s.id,phone:s.phone})
+      .then(emp=>{
+        if(emp){
+          setupMainScreen(emp); // ✅ เข้าเลย
+        }else{
+          localStorage.removeItem("session");
+          showScreen("screenChoice");
+        }
+      });
+
   }else{
-    currentRole="admin";adminPassword=s.password;
-    setupMainScreen();loadAll();
+    currentRole="admin";
+    adminPassword=s.password;
+
+    setupMainScreen();
+    loadAll();
   }
 }
 
@@ -631,14 +644,19 @@ function initDragScroll(){
 }
 
 /* ===== INIT ===== */
-window.onload=()=>{
-  document.body.style.display="block";
+window.onload = () => {
   initDragScroll();
-  if(localStorage.getItem("session")){
+
+  const session = localStorage.getItem("session");
+
+  if(session){
+    // ✅ ยังไม่โชว์หน้าอะไร รอ loadSession เลย
     loadSession();
   }else{
     showScreen("screenChoice");
   }
+
+  document.body.style.display = "block"; // 👈 ย้ายมาท้ายสุด
 };
 
 
