@@ -483,7 +483,30 @@ async function saveEmployee(){
     const res=await api(isAdding?"/api/add":"/api/update","POST",data);
     showLoading(false);
     alert(res.success||res.error);
-    if(res.success){closeModal();loadAll();}
+    if(res.success){
+    closeModal();
+
+    if(currentRole === "admin"){
+        loadAll();   // admin เห็นทั้งหมด
+    }else{
+        // employee → กลับไปเห็นตัวเอง
+        const emp = {
+        id: fId.value,
+        name: fName.value,
+        nickname: fNickname.value,
+        phone: fPhone.value,
+        ec1_name: fEc1Name.value,
+        ec1_relation: fEc1Rel.value,
+        ec1_phone: fEc1Phone.value,
+        ec2_name: fEc2Name.value,
+        ec2_relation: fEc2Rel.value,
+        ec2_phone: fEc2Phone.value,
+        row: currentRow
+        };
+
+        setupMainScreen(emp);
+    }
+    }
   }catch(e){showLoading(false);alert("เกิดข้อผิดพลาด");console.error(e);}
 }
 
