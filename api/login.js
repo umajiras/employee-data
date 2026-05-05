@@ -10,18 +10,23 @@ export default async function handler(req, res) {
     range: "employee!A2:J",
   });
 
-  const rows = r.data.values || [];
+    const rows = response.data.values || [];
 
-  for (let i = 0; i < rows.length; i++) {
-    if (rows[i][0] == id && rows[i][3] == phone) {
-      return res.json({
-        id: rows[i][0],
-        name: rows[i][1],
-        nickname: rows[i][2],
-        phone: rows[i][3],
-      });
-    }
-  }
+    const data = rows.map((r, i) => ({
+    row: i + 2,   // 👈 ใส่ตรงนี้
+    id: r[0],
+    name: r[1],
+    nickname: r[2],
+    phone: r[3],
+    ec1_name: r[4],
+    ec1_relation: r[5],
+    ec1_phone: r[6],
+    ec2_name: r[7],
+    ec2_relation: r[8],
+    ec2_phone: r[9],
+    }));
 
-  res.json(null);
+    const emp = data.find(e => e.id === id);
+
+    res.json(emp);
 }
