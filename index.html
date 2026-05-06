@@ -150,7 +150,13 @@ tr:hover td { background: #f7f9fc; }
       </div>
       <div class="field">
         <label>เบอร์โทรศัพท์</label>
-        <input type="text" id="empLoginPhone" placeholder="เช่น 0812345678" onkeydown="if(event.key==='Enter') loginEmployee()">
+        <input type="text" id="empLoginPhone"
+        maxlength="10"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,10)"
+        placeholder="เช่น 0812345678"
+        onkeydown="if(event.key==='Enter') loginEmployee()">
       </div>
       <div class="error-msg" id="empError">รหัสหรือเบอร์โทรไม่ถูกต้อง กรุณาลองใหม่</div>
       <div class="login-actions">
@@ -254,7 +260,7 @@ tr:hover td { background: #f7f9fc; }
       <div><label>รหัสพนักงาน</label><input id="fId" type="text" readonly></div>
       <div><label>ชื่อเล่น</label><input id="fNickname" type="text"></div>
       <div class="full"><label>ชื่อ-นามสกุล</label><input id="fName" type="text"></div>
-      <div class="full"><label>เบอร์โทรศัพท์</label><input id="fPhone" type="text"></div>
+      <div class="full"><label>เบอร์โทรศัพท์</label><input id="fPhone" type="text" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,10)">
       <div class="divider"></div>
       <div class="section-lbl">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -262,7 +268,7 @@ tr:hover td { background: #f7f9fc; }
       </div>
       <div class="full"><label>ชื่อ-นามสกุล</label><input id="fEc1Name" type="text"></div>
       <div><label>ความสัมพันธ์</label><input id="fEc1Rel" type="text"></div>
-      <div><label>เบอร์โทร</label><input id="fEc1Phone" type="text"></div>
+      <div><label>เบอร์โทร</label><input id="fEc1Phone" type="text" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,10)">
       <div class="divider"></div>
       <div class="section-lbl">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -270,7 +276,7 @@ tr:hover td { background: #f7f9fc; }
       </div>
       <div class="full"><label>ชื่อ-นามสกุล</label><input id="fEc2Name" type="text"></div>
       <div><label>ความสัมพันธ์</label><input id="fEc2Rel" type="text"></div>
-      <div><label>เบอร์โทร</label><input id="fEc2Phone" type="text"></div>
+      <div><label>เบอร์โทร</label><input id="fEc2Phone" type="text" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,10)">
     </div>
     <div class="modal-footer">
       <button class="btn btn-gray" onclick="closeModal()">
@@ -488,8 +494,27 @@ async function saveEmployee(){
     password: adminPassword
   };
 
+  // ✅ เช็ค required
   if(!data.id || !data.name){
     alert("กรุณากรอกรหัสและชื่อ");
+    return;
+  }
+
+  // ✅ เช็คเบอร์หลัก
+  if(data.phone.length !== 10){
+    alert("กรุณากรอกเบอร์โทรให้ครบ 10 หลัก");
+    return;
+  }
+
+  // ✅ เช็คเบอร์ฉุกเฉิน 1 (ถ้ามีต้องครบ 10)
+  if(data.ec1_phone && data.ec1_phone.length !== 10){
+    alert("เบอร์ผู้ติดต่อฉุกเฉิน 1 ต้องครบ 10 หลัก");
+    return;
+  }
+
+  // ✅ เช็คเบอร์ฉุกเฉิน 2 (ถ้ามีต้องครบ 10)
+  if(data.ec2_phone && data.ec2_phone.length !== 10){
+    alert("เบอร์ผู้ติดต่อฉุกเฉิน 2 ต้องครบ 10 หลัก");
     return;
   }
 
@@ -516,10 +541,14 @@ async function saveEmployee(){
         }
       };
     }else{
-      body = data; // update ใช้แบบเดิม
+      body = data;
     }
 
-    const res = await api(isAdding ? "/api/add" : "/api/update", "POST", body);
+    const res = await api(
+      isAdding ? "/api/add" : "/api/update",
+      "POST",
+      body
+    );
 
     showLoading(false);
     alert(res.success || res.error);
@@ -528,9 +557,8 @@ async function saveEmployee(){
       closeModal();
 
       if(currentRole === "admin"){
-        loadAll();   // admin เห็นทั้งหมด
+        loadAll();
       }else{
-        // employee → กลับไปเห็นตัวเอง
         const emp = {
           id: data.id,
           name: data.name,
