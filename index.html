@@ -494,26 +494,35 @@ async function saveEmployee(){
     password: adminPassword
   };
 
-  // ✅ เช็ค required
-  if(!data.id || !data.name){
-    alert("กรุณากรอกรหัสและชื่อ");
+  // ✅ บังคับกรอกทุกช่อง
+  if(
+    !data.id ||
+    !data.name ||
+    !data.nickname ||
+    !data.phone ||
+    !data.ec1_name ||
+    !data.ec1_relation ||
+    !data.ec1_phone ||
+    !data.ec2_name ||
+    !data.ec2_relation ||
+    !data.ec2_phone
+  ){
+    alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
     return;
   }
 
-  // ✅ เช็คเบอร์หลัก
+  // ✅ เช็คเบอร์โทรต้อง 10 หลัก
   if(data.phone.length !== 10){
-    alert("กรุณากรอกเบอร์โทรให้ครบ 10 หลัก");
+    alert("เบอร์โทรหลักต้องครบ 10 หลัก");
     return;
   }
 
-  // ✅ เช็คเบอร์ฉุกเฉิน 1 (ถ้ามีต้องครบ 10)
-  if(data.ec1_phone && data.ec1_phone.length !== 10){
+  if(data.ec1_phone.length !== 10){
     alert("เบอร์ผู้ติดต่อฉุกเฉิน 1 ต้องครบ 10 หลัก");
     return;
   }
 
-  // ✅ เช็คเบอร์ฉุกเฉิน 2 (ถ้ามีต้องครบ 10)
-  if(data.ec2_phone && data.ec2_phone.length !== 10){
+  if(data.ec2_phone.length !== 10){
     alert("เบอร์ผู้ติดต่อฉุกเฉิน 2 ต้องครบ 10 หลัก");
     return;
   }
