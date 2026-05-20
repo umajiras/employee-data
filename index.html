@@ -312,7 +312,10 @@ function showLoading(v){
 async function api(url, method="GET", body=null){
   const res = await fetch(url,{
     method,
-    headers:{"Content-Type":"application/json"},
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":"Bearer "+localStorage.getItem("token")
+    },
     body: body ? JSON.stringify(body) : null
   });
   return res.json();
@@ -371,19 +374,59 @@ async function loginEmployee(){
 
 /* ===== LOGIN ADMIN ===== */
 async function loginAdmin(){
-  const pwd=adminPwd.value;
-  if(!pwd){alert("กรอกรหัสผ่านก่อน");return;}
-  document.getElementById("adminError").style.display="none";
+
+  const pwd = adminPwd.value;
+
+  if(!pwd){
+    alert("กรอกรหัสผ่านก่อน");
+    return;
+  }
+
+  document.getElementById("adminError").style.display = "none";
+
   showLoading(true);
+
   try{
-    const result=await api("/api/checkAdmin","POST",{password:pwd});
+
+    const result = await api(
+      "/api/checkAdmin",
+      "POST",
+      { password: pwd }
+    );
+
     showLoading(false);
-    if(!result||!result.ok){document.getElementById("adminError").style.display="block";return;}
-    currentRole="admin";adminPassword=pwd;
-    localStorage.setItem("session",JSON.stringify({role:"admin",password:pwd}));
+
+    if(!result || !result.ok){
+      document.getElementById("adminError").style.display = "block";
+      return;
+    }
+
+    currentRole = "admin";
+
+    localStorage.setItem(
+      "session",
+      JSON.stringify({
+        role:"admin"
+      })
+    );
+
+    localStorage.setItem(
+      "token",
+      result.token
+    );
+
     setupMainScreen();
+
     loadAll();
-  }catch(e){showLoading(false);alert("เกิดข้อผิดพลาด กรุณาลองใหม่");console.error(e);}
+
+  }catch(e){
+
+    showLoading(false);
+
+    alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
+
+    console.error(e);
+  }
 }
 
 /* ===== LOAD ALL ===== */

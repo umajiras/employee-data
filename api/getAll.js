@@ -1,6 +1,15 @@
 import { getSheet, mapRow } from "./_lib.js";
 
 export default async function handler(req, res) {
+
+  const token = req.headers.authorization;
+
+  if (token !== `Bearer ${process.env.ADMIN_TOKEN}`) {
+    return res.status(403).json({
+      error: "Forbidden"
+    });
+  }
+
   try {
     const sheets = await getSheet();
 
@@ -13,10 +22,10 @@ export default async function handler(req, res) {
 
     const data = rows
       .map((r, i) => {
-        if (!r || !r[0]) return null;   // ❌ กันแถวว่าง
-        return mapRow(r, i);            // ✅ ส่ง index ด้วย (ถ้าใช้ row)
+        if (!r || !r[0]) return null;
+        return mapRow(r, i);
       })
-      .filter(Boolean);                 // ❌ ลบ null ออก
+      .filter(Boolean);
 
     res.status(200).json({ data });
 
