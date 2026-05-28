@@ -111,13 +111,36 @@ async function api(url,method="GET",body=null){
 }
 
 /* ===== CHECK SESSION ===== */
-const session =
-  JSON.parse(localStorage.getItem("session"));
+/* ===== CHECK SESSION ===== */
 
-if(session && session.role === "admin"){
+window.onload = () => {
 
-  location.href = "/dashboard.html";
-}
+  const token = localStorage.getItem("token");
+
+  const sessionText = localStorage.getItem("session");
+
+  if(!token || !sessionText){
+    return;
+  }
+
+  try{
+
+    const session = JSON.parse(sessionText);
+
+    if(session.role === "admin"){
+
+      location.href = "/dashboard.html";
+    }
+
+  }catch(err){
+
+    console.error(err);
+
+    localStorage.removeItem("session");
+
+    localStorage.removeItem("token");
+  }
+};
 
 /* ===== LOGIN ===== */
 async function loginAdmin(){
