@@ -1,819 +1,696 @@
-```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Admin Dashboard</title>
-
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1"
->
-
+<title>ระบบข้อมูลพนักงาน</title>
 <style>
-
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-body{
-  font-family:'Sarabun',sans-serif;
-  background:#EEF2F7;
-  color:#333;
-}
-
-.container{
-  width:100%;
-  max-width:1400px;
-  margin:auto;
-  padding:18px;
-}
-
-.topbar{
-  background:white;
-  border-radius:16px;
-  padding:14px 18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  box-shadow:0 2px 10px rgba(0,0,0,.05);
-  margin-bottom:14px;
-}
-
-.top-left{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.logo-box{
-  width:38px;
-  height:38px;
-  border-radius:10px;
-  background:#E8F1FF;
-  color:#185FA5;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.logo-title{
-  font-size:22px;
-  font-weight:700;
-  color:#185FA5;
-}
-
-.btn{
-  border:none;
-  border-radius:12px;
-  padding:10px 14px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  font-weight:600;
-  transition:.2s;
-}
-
-.btn-gray{
-  background:#F5F7FA;
-  border:1px solid #DCE3EC;
-}
-
-.btn-gray:hover{
-  background:#E8EDF4;
-}
-
-.btn-blue{
-  background:#185FA5;
-  color:white;
-}
-
-.btn-blue:hover{
-  background:#0E4A84;
-}
-
-.btn-green{
-  background:#4E8F1F;
-  color:white;
-}
-
-.btn-green:hover{
-  background:#3E7317;
-}
-
-.btn-amber{
-  background:#A86A09;
-  color:white;
-  width:40px;
-  height:40px;
-  padding:0;
-}
-
-.btn-red{
-  background:#B92E2E;
-  color:white;
-  width:40px;
-  height:40px;
-  padding:0;
-}
-
-.toolbar{
-  background:white;
-  border-radius:16px;
-  padding:12px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  box-shadow:0 2px 10px rgba(0,0,0,.05);
-  margin-bottom:14px;
-}
-
-.search-wrap{
-  flex:1;
-  position:relative;
-}
-
-.search-wrap input{
-  width:100%;
-  padding:13px 14px 13px 44px;
-  border:1px solid #D7E0EA;
-  border-radius:12px;
-  font-size:14px;
-}
-
-.search-icon{
-  position:absolute;
-  left:14px;
-  top:50%;
-  transform:translateY(-50%);
-  color:#666;
-}
-
-.table-wrap{
-  overflow:auto;
-  cursor:grab;
-  background:white;
-  border-radius:16px;
-  box-shadow:0 2px 10px rgba(0,0,0,.05);
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:1400px;
-}
-
-thead{
-  background:#185FA5;
-}
-
-th{
-  color:white;
-  padding:14px;
-  text-align:left;
-  white-space:nowrap;
-  font-size:14px;
-}
-
-td{
-  padding:12px 14px;
-  border-bottom:1px solid #EEF2F7;
-  white-space:nowrap;
-  font-size:14px;
-}
-
-tr:hover td{
-  background:#F7FAFD;
-}
-
-.action-btns{
-  display:flex;
-  gap:8px;
-}
-
-.modal-bg{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:1000;
-}
-
-.modal-bg.show{
-  display:flex;
-}
-
-.modal{
-  background:white;
-  width:100%;
-  max-width:680px;
-  border-radius:18px;
-  padding:24px;
-}
-
-.modal-title{
-  font-size:22px;
-  font-weight:700;
-  margin-bottom:18px;
-  color:#185FA5;
-}
-
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-
-.full{
-  grid-column:1/-1;
-}
-
-.modal input{
-  width:100%;
-  padding:12px;
-  border:1px solid #D7E0EA;
-  border-radius:12px;
-}
-
-.modal-footer{
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-  margin-top:20px;
-}
-
-.loading{
-  position:fixed;
-  inset:0;
-  background:rgba(255,255,255,.7);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:3000;
-}
-
-.loading.show{
-  display:flex;
-}
-
-.spinner{
-  width:44px;
-  height:44px;
-  border:4px solid #ddd;
-  border-top-color:#185FA5;
-  border-radius:50%;
-  animation:spin .7s linear infinite;
-}
-
-@keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
-}
-
-.material-symbols-outlined{
-  font-size:20px;
-}
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Sarabun', sans-serif; background: #f0f4f8; color: #333; }
+.container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+.login-wrap { display: flex; align-items: center; justify-content: center; min-height: 480px; }
+.login-box { background: white; border-radius: 14px; padding: 32px; width: 100%; max-width: 420px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08); border: 1px solid #e8edf3; }
+.login-box .brand { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.login-box .brand svg { width: 22px; height: 22px; flex-shrink: 0; color: #185FA5; }
+.login-box .brand span { font-size: 17px; font-weight: 600; color: #1a2332; }
+.login-box .sub { font-size: 13px; color: #888; margin-bottom: 24px; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12px; color: #666; margin-bottom: 5px; font-weight: 500; }
+.field input { width: 100%; padding: 10px 12px; border: 1px solid #cdd5e0; border-radius: 8px;
+  font-size: 14px; background: white; color: #333; transition: .2s; }
+.field input:focus { outline: none; border-color: #185FA5; box-shadow: 0 0 0 3px rgba(24,95,165,0.12); }
+.error-msg { font-size: 13px; color: #A32D2D; background: #FCEBEB; padding: 9px 12px;
+  border-radius: 8px; margin-top: 10px; display: none; border: 1px solid #F09595; }
+.choice-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+.choice-btn { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 10px;
+  border: 1px solid #dde3ec; background: white; cursor: pointer; font-size: 14px; font-weight: 500;
+  color: #333; transition: .15s; }
+.choice-btn:hover { background: #f7f9fc; border-color: #185FA5; }
+.choice-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.choice-btn.primary-choice { background: #E6F1FB; border-color: #B5D4F4; color: #0C447C; }
+.choice-btn.primary-choice:hover { background: #cce3f4; }
+.login-actions { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px;
+  border: 1px solid #cdd5e0; background: white; cursor: pointer; font-size: 13px; font-weight: 600;
+  color: #444; transition: .15s; white-space: nowrap; }
+.btn:hover { background: #f5f7fa; }
+.btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+.btn-blue { background: #185FA5; border-color: #185FA5; color: white; }
+.btn-blue:hover { background: #0C447C; border-color: #0C447C; }
+.btn-green { background: #3B6D11; border-color: #3B6D11; color: white; }
+.btn-green:hover { background: #27500A; border-color: #27500A; }
+.btn-amber { background: #854F0B; border-color: #854F0B; color: white; padding: 5px 10px; font-size: 12px; }
+.btn-amber:hover { background: #633806; }
+.btn-red { background: #A32D2D; border-color: #A32D2D; color: white; padding: 5px 10px; font-size: 12px; }
+.btn-red:hover { background: #791F1F; }
+.btn-gray { background: #f5f7fa; border-color: #cdd5e0; color: #555; }
+.btn-gray:hover { background: #eaecf0; }
+.topbar { display: flex; align-items: center; justify-content: space-between; background: white;
+  padding: 12px 16px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-left svg { width: 22px; height: 22px; color: #185FA5; }
+.logo-text { font-size: 15px; font-weight: 600; color: #1a2332; }
+.badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.badge-admin { background: #E6F1FB; color: #0C447C; border: 1px solid #B5D4F4; }
+.badge-emp { background: #EAF3DE; color: #27500A; border: 1px solid #C0DD97; }
+.user-name { font-size: 13px; color: #666; }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: white;
+  padding: 10px 14px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 12px; }
+.search-wrap { flex: 1; min-width: 200px; position: relative; }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px; color: #aaa; pointer-events: none; }
+.search-wrap input { width: 100%; padding: 9px 12px 9px 36px; border: 1px solid #cdd5e0;
+  border-radius: 8px; font-size: 13px; color: #333; background: white; transition: .2s; }
+.search-wrap input:focus { outline: none; border-color: #185FA5; box-shadow: 0 0 0 3px rgba(24,95,165,0.12); }
+.count { font-size: 12px; color: #888; margin-bottom: 8px; }
+.table-wrap { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  overflow-x: auto; border: 1px solid #e8edf3;
+  /* ห้าม select text ตอนลาก */
+  user-select: none; -webkit-user-select: none; }
+/* เคอร์เซอร์ตาม state */
+.table-wrap.cursor-grab  { cursor: grab; }
+.table-wrap.cursor-grabbing { cursor: grabbing; }
+table { width: max-content; min-width: 100%; border-collapse: collapse; font-size: 13px; }
+thead { background: #185FA5; }
+th { padding: 10px 12px; text-align: left; white-space: nowrap; color: white; font-weight: 600; font-size: 12px; }
+td { padding: 9px 12px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; white-space: nowrap; color: #333; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #f7f9fc; }
+.no-data { text-align: center; padding: 40px; color: #aaa; }
+.action-btns { display: flex; gap: 4px; }
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 200; justify-content: center; align-items: center; }
+.modal-bg.show { display: flex; }
+.modal { background: white; border-radius: 14px; padding: 28px; width: 100%; max-width: 560px;
+  max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+.modal-title { display: flex; align-items: center; gap: 8px; color: #185FA5; font-size: 16px;
+  font-weight: 600; margin-bottom: 20px; }
+.modal-title svg { width: 20px; height: 20px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grid .full { grid-column: 1 / -1; }
+.modal label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; font-weight: 500; }
+.modal input { width: 100%; padding: 9px 12px; border: 1px solid #cdd5e0; border-radius: 8px;
+  font-size: 14px; color: #333; transition: .2s; }
+.modal input:focus { outline: none; border-color: #185FA5; box-shadow: 0 0 0 3px rgba(24,95,165,0.12); }
+.modal input[readonly] { background: #f5f5f5; color: #999; cursor: not-allowed; }
+.divider { grid-column: 1/-1; border-top: 1px dashed #e0e4ea; margin: 4px 0; }
+.section-lbl { grid-column: 1/-1; font-size: 13px; font-weight: 600; color: #185FA5;
+  display: flex; align-items: center; gap: 6px; }
+.section-lbl svg { width: 15px; height: 15px; }
+.modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px;
+  border-top: 1px solid #eee; padding-top: 16px; }
+.loading { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.7);
+  z-index: 300; justify-content: center; align-items: center; }
+.loading.show { display: flex; }
+.spinner { width: 36px; height: 36px; border: 3px solid #e0e6f0; border-top-color: #185FA5;
+  border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none !important; }
 </style>
 </head>
+<body style="display:none;">
 
-<body>
-
-<div class="container">
-
+<!-- หน้าหลัก -->
+<div id="screenMain" class="container">
   <div class="topbar">
-
-    <div class="top-left">
-
-      <div class="logo-box">
-        <span class="material-symbols-outlined">
-          inventory_2
-        </span>
-      </div>
-
-      <div class="logo-title">
-        ระบบข้อมูลพนักงาน
-      </div>
-
+    <div class="topbar-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <span class="logo-text">ระบบข้อมูลพนักงาน</span>
+      <span class="badge" id="roleBadge"></span>
+      <span id="userNameLabel" class="user-name"></span>
     </div>
-
-    <button
-      class="btn btn-gray"
-      onclick="logout()"
-    >
-      <span class="material-symbols-outlined">
-        logout
-      </span>
+    <button class="btn btn-gray" onclick="logout()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       ออกจากระบบ
     </button>
-
   </div>
 
-  <div class="toolbar">
-
+  <div class="toolbar hidden" id="adminBar">
     <div class="search-wrap">
-
-      <span class="material-symbols-outlined search-icon">
-        search
-      </span>
-
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="ค้นหา รหัส / ชื่อ / ชื่อเล่น / เบอร์..."
-        oninput="filterTable()"
-      >
-
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="ค้นหา รหัส / ชื่อ / ชื่อเล่น / เบอร์..." oninput="filterTable()">
     </div>
-
-    <button
-      class="btn btn-blue"
-      onclick="loadAll()"
-    >
-      <span class="material-symbols-outlined">
-        table_rows
-      </span>
+    <button class="btn btn-blue" onclick="loadAll()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg>
       ดูทั้งหมด
     </button>
-
-    <button
-      class="btn btn-green"
-      onclick="openAdd()"
-    >
-      <span class="material-symbols-outlined">
-        person_add
-      </span>
+    <button class="btn btn-green" onclick="openAdd()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
       เพิ่มพนักงาน
     </button>
-
   </div>
 
-  <div class="table-wrap">
-
+  <div class="count" id="countLabel"></div>
+  <div class="table-wrap cursor-grab" id="tableWrap">
     <table>
-
       <thead>
         <tr>
           <th>จัดการ</th>
-          <th>รหัส</th>
-          <th>ชื่อ-นามสกุล</th>
-          <th>ชื่อเล่น</th>
-          <th>เบอร์โทร</th>
-          <th>ผู้ติดต่อฉุกเฉิน 1</th>
-          <th>ความสัมพันธ์</th>
-          <th>เบอร์ฉุกเฉิน 1</th>
-          <th>ผู้ติดต่อฉุกเฉิน 2</th>
-          <th>ความสัมพันธ์</th>
-          <th>เบอร์ฉุกเฉิน 2</th>
+          <th>รหัส</th><th>ชื่อ-นามสกุล</th><th>ชื่อเล่น</th><th>เบอร์โทร</th>
+          <th>ผู้ติดต่อฉุกเฉิน 1</th><th>ความสัมพันธ์</th><th>เบอร์ฉุกเฉิน 1</th>
+          <th>ผู้ติดต่อฉุกเฉิน 2</th><th>ความสัมพันธ์</th><th>เบอร์ฉุกเฉิน 2</th>
         </tr>
       </thead>
-
-      <tbody id="tbody"></tbody>
-
+      <tbody id="tbody">
+        <tr><td colspan="11" class="no-data">กำลังโหลดข้อมูล...</td></tr>
+      </tbody>
     </table>
-
   </div>
-
 </div>
 
+<!-- Modal แก้ไข/เพิ่ม -->
 <div class="modal-bg" id="modal">
-
   <div class="modal">
-
-    <div class="modal-title" id="modalTitle">
-      เพิ่มพนักงาน
+    <div class="modal-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <span id="modalTitleText">แก้ไขข้อมูล</span>
     </div>
-
     <div class="form-grid">
-
-      <div>
-        <input id="fId" placeholder="รหัสพนักงาน">
+      <div><label>รหัสพนักงาน</label><input id="fId" type="text" readonly></div>
+      <div><label>ชื่อเล่น</label><input id="fNickname" type="text"></div>
+      <div class="full"><label>ชื่อ-นามสกุล</label><input id="fName" type="text"></div>
+      <div class="full"><label>เบอร์โทรศัพท์</label><input id="fPhone" type="text" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,10)">
+      <div class="divider"></div>
+      <div class="section-lbl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        ผู้ติดต่อฉุกเฉิน 1
       </div>
-
-      <div>
-        <input id="fNickname" placeholder="ชื่อเล่น">
+      <div class="full"><label>ชื่อ-นามสกุล</label><input id="fEc1Name" type="text"></div>
+      <div><label>ความสัมพันธ์</label><input id="fEc1Rel" type="text"></div>
+      <div><label>เบอร์โทร</label><input id="fEc1Phone" type="text" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,10)">
+      <div class="divider"></div>
+      <div class="section-lbl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        ผู้ติดต่อฉุกเฉิน 2
       </div>
-
-      <div class="full">
-        <input id="fName" placeholder="ชื่อเต็ม">
-      </div>
-
-      <div class="full">
-        <input id="fPhone" placeholder="เบอร์โทร">
-      </div>
-
-      <div class="full">
-        <input id="fEc1Name" placeholder="ผู้ติดต่อฉุกเฉิน 1">
-      </div>
-
-      <div>
-        <input id="fEc1Rel" placeholder="ความสัมพันธ์">
-      </div>
-
-      <div>
-        <input id="fEc1Phone" placeholder="เบอร์">
-      </div>
-
-      <div class="full">
-        <input id="fEc2Name" placeholder="ผู้ติดต่อฉุกเฉิน 2">
-      </div>
-
-      <div>
-        <input id="fEc2Rel" placeholder="ความสัมพันธ์">
-      </div>
-
-      <div>
-        <input id="fEc2Phone" placeholder="เบอร์">
-      </div>
-
+      <div class="full"><label>ชื่อ-นามสกุล</label><input id="fEc2Name" type="text"></div>
+      <div><label>ความสัมพันธ์</label><input id="fEc2Rel" type="text"></div>
+      <div><label>เบอร์โทร</label><input id="fEc2Phone" type="text" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g,'').slice(0,10)">
     </div>
-
     <div class="modal-footer">
-
-      <button
-        class="btn btn-gray"
-        onclick="closeModal()"
-      >
+      <button class="btn btn-gray" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         ยกเลิก
       </button>
-
-      <button
-        class="btn btn-blue"
-        onclick="saveEmployee()"
-      >
+      <button class="btn btn-blue" onclick="saveEmployee()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
         บันทึก
       </button>
-
     </div>
-
   </div>
-
 </div>
 
-<div class="loading" id="loading">
-  <div class="spinner"></div>
-</div>
+<!-- Loading -->
+<div class="loading" id="loading"><div class="spinner"></div></div>
 
 <script>
+let currentRole = null;
+let adminPassword = null;
+let currentEmpId = null;
+let currentEmpPhone = null;
+let currentRow = null;
+let isAdding = false;
+let allEmployees = [];
 
-const session =
-  JSON.parse(localStorage.getItem("session"));
-
-if(!session || session.role !== "admin"){
-
-  location.href="/admin.html";
-}
-
-let allEmployees=[];
-let isAdding=true;
-let currentRow=null;
-
+/* ===== LOADING ===== */
 function showLoading(v){
-
-  document
-    .getElementById("loading")
-    .classList[v?"add":"remove"]("show");
+  document.getElementById('loading').classList[v?'add':'remove']('show');
 }
 
-async function api(url,method="GET",body=null){
-
+/* ===== API ===== */
+async function api(url, method="GET", body=null){
   const res = await fetch(url,{
     method,
     headers:{
       "Content-Type":"application/json",
-      "Authorization":
-        "Bearer " + localStorage.getItem("token")
+      "Authorization":"Bearer "+localStorage.getItem("token")
     },
-    body:body?JSON.stringify(body):null
+    body: body ? JSON.stringify(body) : null
   });
-
   return res.json();
 }
 
-async function loadAll(){
+/* ===== SCREENS ===== */
+function showScreen(id){
+  ["screenChoice","screenEmployee","screenAdmin","screenMain"].forEach(s=>{
+    document.getElementById(s).classList.add("hidden");
+  });
+  document.getElementById(id).classList.remove("hidden");
+}
+
+/* ===== SETUP MAIN ===== */
+function setupMainScreen(emp=null){
+  showScreen("screenMain");
+  if(currentRole==="admin"){
+    document.getElementById("roleBadge").innerText="ADMIN";
+    document.getElementById("roleBadge").className="badge badge-admin";
+    document.getElementById("adminBar").classList.remove("hidden");
+    document.getElementById("userNameLabel").innerText="";
+  }else{
+    document.getElementById("roleBadge").innerText="EMPLOYEE";
+    document.getElementById("roleBadge").className="badge badge-emp";
+    document.getElementById("adminBar").classList.add("hidden");
+    document.getElementById("userNameLabel").innerText=emp?.name||"";
+    if(emp){
+    allEmployees = [emp];   // 👈 สำคัญมาก
+    renderTable(allEmployees);
+    }
+  }
+}
+
+/* ===== LOGOUT ===== */
+function logout(){
+  localStorage.removeItem("session");
+  location.reload();
+}
+
+/* ===== LOGIN EMP ===== */
+async function loginEmployee(){
+  const id=empLoginId.value.trim();
+  const phone=empLoginPhone.value.trim();
+  if(!id||!phone){alert("กรอกข้อมูลก่อน");return;}
+  document.getElementById("empError").style.display="none";
+  showLoading(true);
+  try{
+    const emp=await api("/api/login","POST",{id,phone});
+    showLoading(false);
+    if(!emp){document.getElementById("empError").style.display="block";return;}
+    currentRole="employee";currentEmpId=id;currentEmpPhone=phone;
+    localStorage.setItem("session",JSON.stringify({role:"employee",id,phone}));
+    setupMainScreen(emp);
+  }catch(e){showLoading(false);alert("เกิดข้อผิดพลาด กรุณาลองใหม่");console.error(e);}
+}
+
+/* ===== LOGIN ADMIN ===== */
+async function loginAdmin(){
+
+  const pwd = adminPwd.value;
+
+  if(!pwd){
+    alert("กรอกรหัสผ่านก่อน");
+    return;
+  }
+
+  document.getElementById("adminError").style.display = "none";
 
   showLoading(true);
 
   try{
 
-    const result =
-      await api("/api/getAll");
+    const result = await api(
+      "/api/checkAdmin",
+      "POST",
+      { password: pwd }
+    );
 
-    allEmployees =
-      result.data || [];
+    showLoading(false);
 
-    renderTable(allEmployees);
+    if(!result || !result.ok){
+      document.getElementById("adminError").style.display = "block";
+      return;
+    }
+
+    currentRole = "admin";
+
+    localStorage.setItem(
+      "session",
+      JSON.stringify({
+        role:"admin"
+      })
+    );
+
+    localStorage.setItem(
+      "token",
+      result.token
+    );
+
+    setupMainScreen();
+
+    loadAll();
 
   }catch(e){
 
-    alert("โหลดข้อมูลไม่ได้");
-  }
+    showLoading(false);
 
-  showLoading(false);
+    alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
+
+    console.error(e);
+  }
 }
 
+/* ===== LOAD ALL ===== */
+async function loadAll(){
+  showLoading(true);
+  try{
+    const result=await api("/api/getAll");
+    allEmployees=result.data||[];
+    renderTable(allEmployees);
+  }catch(e){alert("โหลดข้อมูลไม่ได้");console.error(e);}
+  finally{showLoading(false);}
+}
+
+/* ===== RENDER TABLE ===== */
 function renderTable(data){
-
-  const tbody =
-    document.getElementById("tbody");
-
-  if(!data.length){
-
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="11" style="text-align:center;padding:40px">
-          ไม่พบข้อมูล
-        </td>
-      </tr>
-    `;
-
+  const tbody=document.getElementById("tbody");
+  document.getElementById("countLabel").innerText=`ทั้งหมด ${data.length} รายการ`;
+  if(!data||data.length===0){
+    tbody.innerHTML=`<tr><td colspan="11" class="no-data">ไม่พบข้อมูล</td></tr>`;
     return;
   }
+  const isAdmin=currentRole==="admin";
+  const cleanData = data.filter(d => d && d.id);
 
-  tbody.innerHTML = data.map(d=>`
-
+  tbody.innerHTML=cleanData.map(d=>`
     <tr>
-
       <td>
-
         <div class="action-btns">
-
-          <button
-            class="btn btn-amber"
-            onclick="openEdit('${d.id}')"
-          >
-            <span class="material-symbols-outlined">
-              edit
-            </span>
+          <button class="btn btn-amber" onclick="openEditById('${d.id}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
-
-          <button
-            class="btn btn-red"
-            onclick="delEmployee('${d.id}',${d.row})"
-          >
-            <span class="material-symbols-outlined">
-              delete
-            </span>
-          </button>
-
+          ${isAdmin?`<button class="btn btn-red" onclick="delEmployee('${d.id}',${d.row})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          </button>`:""}
         </div>
-
       </td>
-
       <td>${d.id||""}</td>
       <td>${d.name||""}</td>
       <td>${d.nickname||""}</td>
       <td>${d.phone||""}</td>
-      <td>${d.ec1_name||""}</td>
-      <td>${d.ec1_relation||""}</td>
-      <td>${d.ec1_phone||""}</td>
-      <td>${d.ec2_name||""}</td>
-      <td>${d.ec2_relation||""}</td>
-      <td>${d.ec2_phone||""}</td>
-
+      <td>${d.ec1_name||"-"}</td>
+      <td>${d.ec1_relation||"-"}</td>
+      <td>${d.ec1_phone||"-"}</td>
+      <td>${d.ec2_name||"-"}</td>
+      <td>${d.ec2_relation||"-"}</td>
+      <td>${d.ec2_phone||"-"}</td>
     </tr>
-
   `).join("");
 }
 
+/* ===== FILTER ===== */
 function filterTable(){
-
-  const q =
-    document
-    .getElementById("searchInput")
-    .value
-    .toLowerCase();
-
-  const filtered =
-    allEmployees.filter(e=>
-
-      (e.id||"").toLowerCase().includes(q) ||
-      (e.name||"").toLowerCase().includes(q) ||
-      (e.nickname||"").toLowerCase().includes(q) ||
-      (e.phone||"").toLowerCase().includes(q)
-    );
-
+  const q=document.getElementById("searchInput").value.toLowerCase();
+  const filtered=allEmployees.filter(e=>
+    (e.id||"").toLowerCase().includes(q)||
+    (e.name||"").toLowerCase().includes(q)||
+    (e.nickname||"").toLowerCase().includes(q)||
+    (e.phone||"").toLowerCase().includes(q)
+  );
   renderTable(filtered);
 }
 
-function openAdd(){
-
-  isAdding = true;
-
-  currentRow = null;
-
-  modalTitle.innerText =
-    "เพิ่มพนักงาน";
-
-  [
-    "fId",
-    "fName",
-    "fNickname",
-    "fPhone",
-    "fEc1Name",
-    "fEc1Rel",
-    "fEc1Phone",
-    "fEc2Name",
-    "fEc2Rel",
-    "fEc2Phone"
-  ].forEach(id=>{
-
-    document.getElementById(id).value="";
-  });
-
-  modal.classList.add("show");
+/* ===== MODAL ===== */
+function openEdit(e){
+  isAdding=false;currentRow=e.row;
+  document.getElementById("modalTitleText").textContent="แก้ไขข้อมูลพนักงาน";
+  document.getElementById("fId").value=e.id;document.getElementById("fId").setAttribute("readonly",true);
+  document.getElementById("fName").value=e.name||"";
+  document.getElementById("fNickname").value=e.nickname||"";
+  document.getElementById("fPhone").value=e.phone||"";
+  document.getElementById("fEc1Name").value=e.ec1_name||"";
+  document.getElementById("fEc1Rel").value=e.ec1_relation||"";
+  document.getElementById("fEc1Phone").value=e.ec1_phone||"";
+  document.getElementById("fEc2Name").value=e.ec2_name||"";
+  document.getElementById("fEc2Rel").value=e.ec2_relation||"";
+  document.getElementById("fEc2Phone").value=e.ec2_phone||"";
+  document.getElementById("modal").classList.add("show");
 }
 
-function openEdit(id){
-
-  const e =
-    allEmployees.find(x=>x.id==id);
-
-  if(!e)return;
-
-  isAdding = false;
-
-  currentRow = e.row;
-
-  modalTitle.innerText =
-    "แก้ไขข้อมูล";
-
-  fId.value=e.id||"";
-  fName.value=e.name||"";
-  fNickname.value=e.nickname||"";
-  fPhone.value=e.phone||"";
-  fEc1Name.value=e.ec1_name||"";
-  fEc1Rel.value=e.ec1_relation||"";
-  fEc1Phone.value=e.ec1_phone||"";
-  fEc2Name.value=e.ec2_name||"";
-  fEc2Rel.value=e.ec2_relation||"";
-  fEc2Phone.value=e.ec2_phone||"";
-
-  modal.classList.add("show");
+function openAdd(){
+  isAdding=true;currentRow=null;
+  document.getElementById("modalTitleText").textContent="เพิ่มพนักงานใหม่";
+  ["fId","fName","fNickname","fPhone","fEc1Name","fEc1Rel","fEc1Phone","fEc2Name","fEc2Rel","fEc2Phone"]
+    .forEach(id=>document.getElementById(id).value="");
+  document.getElementById("fId").removeAttribute("readonly");
+  document.getElementById("modal").classList.add("show");
 }
 
 function closeModal(){
-
-  modal.classList.remove("show");
+  document.getElementById("modal").classList.remove("show");
+  document.getElementById("fId").setAttribute("readonly",true);
 }
 
+/* ===== SAVE ===== */
 async function saveEmployee(){
-
   const data = {
-
-    id:fId.value.trim(),
-    name:fName.value.trim(),
-    nickname:fNickname.value.trim(),
-    phone:fPhone.value.trim(),
-
-    ec1_name:fEc1Name.value.trim(),
-    ec1_relation:fEc1Rel.value.trim(),
-    ec1_phone:fEc1Phone.value.trim(),
-
-    ec2_name:fEc2Name.value.trim(),
-    ec2_relation:fEc2Rel.value.trim(),
-    ec2_phone:fEc2Phone.value.trim(),
-
-    row:currentRow
+    id: fId.value.trim(),
+    name: fName.value.trim(),
+    nickname: fNickname.value.trim(),
+    phone: fPhone.value.trim(),
+    ec1_name: fEc1Name.value.trim(),
+    ec1_relation: fEc1Rel.value.trim(),
+    ec1_phone: fEc1Phone.value.trim(),
+    ec2_name: fEc2Name.value.trim(),
+    ec2_relation: fEc2Rel.value.trim(),
+    ec2_phone: fEc2Phone.value.trim(),
+    row: currentRow,
+    password: adminPassword
   };
 
+  // ✅ บังคับกรอกทุกช่อง
+  if(
+    !data.id ||
+    !data.name ||
+    !data.nickname ||
+    !data.phone ||
+    !data.ec1_name ||
+    !data.ec1_relation ||
+    !data.ec1_phone ||
+    !data.ec2_name ||
+    !data.ec2_relation ||
+    !data.ec2_phone
+  ){
+    alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+    return;
+  }
+
+  // ✅ เช็คเบอร์โทรต้อง 10 หลัก
+  if(data.phone.length !== 10){
+    alert("เบอร์โทรหลักต้องครบ 10 หลัก");
+    return;
+  }
+
+  if(data.ec1_phone.length !== 10){
+    alert("เบอร์ผู้ติดต่อฉุกเฉิน 1 ต้องครบ 10 หลัก");
+    return;
+  }
+
+  if(data.ec2_phone.length !== 10){
+    alert("เบอร์ผู้ติดต่อฉุกเฉิน 2 ต้องครบ 10 หลัก");
+    return;
+  }
+
   showLoading(true);
 
   try{
+    let body;
 
-    const res =
-      await api(
+    // 🔥 แยก add กับ update
+    if(isAdding){
+      body = {
+        password: adminPassword,
+        data: {
+          id: data.id,
+          name: data.name,
+          nickname: data.nickname,
+          phone: data.phone,
+          ec1_name: data.ec1_name,
+          ec1_relation: data.ec1_relation,
+          ec1_phone: data.ec1_phone,
+          ec2_name: data.ec2_name,
+          ec2_relation: data.ec2_relation,
+          ec2_phone: data.ec2_phone
+        }
+      };
+    }else{
+      body = data;
+    }
 
-        isAdding
-        ? "/api/add"
-        : "/api/update",
+    const res = await api(
+      isAdding ? "/api/add" : "/api/update",
+      "POST",
+      body
+    );
 
-        "POST",
-
-        data
-      );
-
+    showLoading(false);
     alert(res.success || res.error);
 
     if(res.success){
-
       closeModal();
 
-      loadAll();
+      if(currentRole === "admin"){
+        loadAll();
+      }else{
+        const emp = {
+          id: data.id,
+          name: data.name,
+          nickname: data.nickname,
+          phone: data.phone,
+          ec1_name: data.ec1_name,
+          ec1_relation: data.ec1_relation,
+          ec1_phone: data.ec1_phone,
+          ec2_name: data.ec2_name,
+          ec2_relation: data.ec2_relation,
+          ec2_phone: data.ec2_phone,
+          row: currentRow
+        };
+
+        setupMainScreen(emp);
+      }
     }
 
   }catch(e){
-
+    showLoading(false);
     alert("เกิดข้อผิดพลาด");
+    console.error(e);
   }
-
-  showLoading(false);
 }
 
+/* ===== DELETE ===== */
 async function delEmployee(id,row){
-
-  if(!confirm("ลบพนักงาน "+id+" ?"))
-    return;
-
+  if(!confirm("ลบพนักงานรหัส "+id+" ?"))return;
   showLoading(true);
-
   try{
+    const res=await api("/api/delete","POST",{id,row,password:adminPassword});
+    showLoading(false);
+    alert(res.success||res.error);
+    if(res.success) loadAll();
+  }catch(e){showLoading(false);alert("เกิดข้อผิดพลาด");console.error(e);}
+}
 
-    const res =
-      await api(
-        "/api/delete",
-        "POST",
-        {id,row}
-      );
-
-    alert(res.success || res.error);
-
-    if(res.success){
-
-      loadAll();
-    }
-
-  }catch(e){
-
-    alert("เกิดข้อผิดพลาด");
+/* ===== SESSION ===== */
+function loadSession(){
+  const s = JSON.parse(localStorage.getItem("session"));
+  if(!s){
+    showScreen("screenChoice");
+    document.body.style.display = "block";
+    return;
   }
 
-  showLoading(false);
+  if(s.role === "employee"){
+    currentRole="employee";
+    currentEmpId=s.id;
+    currentEmpPhone=s.phone;
+
+    api("/api/login","POST",{id:s.id,phone:s.phone})
+      .then(emp=>{
+        if(emp){
+          setupMainScreen(emp);
+        }else{
+          localStorage.removeItem("session");
+          showScreen("screenChoice");
+        }
+        document.body.style.display = "block"; // 👈 โชว์ตรงนี้
+      });
+
+  }else{
+    currentRole="admin";
+    adminPassword=s.password;
+
+    setupMainScreen();
+    loadAll();
+
+    document.body.style.display = "block"; // 👈 admin ก็โชว์ตรงนี้
+  }
 }
 
-function logout(){
-
-  localStorage.removeItem("session");
-
-  localStorage.removeItem("token");
-
-  location.href="/admin.html";
-}
-
+/* ===== DRAG TO SCROLL (mouse + touch) ===== */
 function initDragScroll(){
+  const el=document.getElementById("tableWrap");
+  let isDown=false,startX,startY,scrollLeft,scrollTop;
 
-  const slider =
-    document.querySelector(".table-wrap");
-
-  if(!slider)return;
-
-  let isDown = false;
-  let startX;
-  let scrollLeft;
-
-  slider.addEventListener("mousedown",(e)=>{
-
-    isDown = true;
-
-    startX =
-      e.pageX - slider.offsetLeft;
-
-    scrollLeft =
-      slider.scrollLeft;
-  });
-
-  slider.addEventListener("mouseleave",()=>{
-
-    isDown = false;
-  });
-
-  slider.addEventListener("mouseup",()=>{
-
-    isDown = false;
-  });
-
-  slider.addEventListener("mousemove",(e)=>{
-
-    if(!isDown)return;
-
+  // --- Mouse ---
+  el.addEventListener("mousedown",e=>{
+    // ไม่ลากถ้ากดที่ปุ่ม
+    if(e.target.closest("button"))return;
+    isDown=true;
+    el.classList.replace("cursor-grab","cursor-grabbing");
+    startX=e.pageX-el.offsetLeft;
+    scrollLeft=el.scrollLeft;
     e.preventDefault();
-
-    const x =
-      e.pageX - slider.offsetLeft;
-
-    const walk =
-      (x - startX) * 1.5;
-
-    slider.scrollLeft =
-      scrollLeft - walk;
   });
+  document.addEventListener("mouseup",()=>{
+    if(!isDown)return;
+    isDown=false;
+    el.classList.replace("cursor-grabbing","cursor-grab");
+  });
+  document.addEventListener("mousemove",e=>{
+    if(!isDown)return;
+    e.preventDefault();
+    el.scrollLeft=scrollLeft-(e.pageX-el.offsetLeft-startX)*1.2;
+  });
+
+  // --- Touch ---
+  el.addEventListener("touchstart",e=>{
+    if(e.target.closest("button"))return;
+    const t=e.touches[0];
+    startX=t.clientX;startY=t.clientY;scrollLeft=el.scrollLeft;
+  },{passive:true});
+  el.addEventListener("touchmove",e=>{
+    if(!startX&&startX!==0)return;
+    const t=e.touches[0];
+    const dx=startX-t.clientX;
+    const dy=startY-t.clientY;
+    // ลากแนวนอนมากกว่าแนวตั้ง → เลื่อนตาราง
+    if(Math.abs(dx)>Math.abs(dy)){
+      e.preventDefault();
+      el.scrollLeft=scrollLeft+dx;
+    }
+  },{passive:false});
+  el.addEventListener("touchend",()=>{startX=null;});
 }
 
-initDragScroll();
+/* ===== INIT ===== */
+window.onload = () => {
 
-loadAll();
+  const session =
+    JSON.parse(localStorage.getItem("session"));
 
+  // ยังไม่ได้ login admin
+  if(!session || session.role !== "admin"){
+
+    location.href = "/admin.html";
+
+    return;
+  }
+
+  // admin mode
+  currentRole = "admin";
+
+  // badge admin
+  document.getElementById("roleBadge").innerText =
+    "ADMIN";
+
+  document.getElementById("roleBadge").className =
+    "badge badge-admin";
+
+  // แสดง toolbar admin
+  document.getElementById("adminBar")
+    .classList.remove("hidden");
+
+  // drag scroll
+  initDragScroll();
+
+  // โหลดข้อมูล
+  loadAll();
+
+  // แสดงหน้า
+  document.body.style.display = "block";
+};
+
+
+
+function openEditById(id){
+  const emp = allEmployees.find(e => e && e.id == id);
+
+  if(!emp){
+    alert("ไม่พบข้อมูล");
+    return;
+  }
+
+  openEdit(emp);
+}
 </script>
-
 </body>
 </html>
-```
