@@ -1,11 +1,19 @@
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Admin Dashboard</title>
 
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1"
+>
+
 <style>
+
 *{
   box-sizing:border-box;
   margin:0;
@@ -14,40 +22,71 @@
 
 body{
   font-family:'Sarabun',sans-serif;
-  background:#f0f4f8;
+  background:#EEF2F7;
   color:#333;
 }
 
 .container{
-  max-width:1200px;
-  margin:0 auto;
-  padding:16px;
+  width:100%;
+  max-width:1400px;
+  margin:auto;
+  padding:18px;
 }
 
 .topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
   background:white;
-  padding:12px 16px;
-  border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.06);
-  margin-bottom:12px;
+  border-radius:16px;
+  padding:14px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+  margin-bottom:14px;
 }
 
-.logo-text{
-  font-size:18px;
-  font-weight:600;
+.top-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logo-box{
+  width:38px;
+  height:38px;
+  border-radius:10px;
+  background:#E8F1FF;
+  color:#185FA5;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.logo-title{
+  font-size:22px;
+  font-weight:700;
   color:#185FA5;
 }
 
 .btn{
-  padding:9px 16px;
   border:none;
-  border-radius:8px;
+  border-radius:12px;
+  padding:10px 14px;
   cursor:pointer;
-  font-size:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
   font-weight:600;
+  transition:.2s;
+}
+
+.btn-gray{
+  background:#F5F7FA;
+  border:1px solid #DCE3EC;
+}
+
+.btn-gray:hover{
+  background:#E8EDF4;
 }
 
 .btn-blue{
@@ -56,57 +95,78 @@ body{
 }
 
 .btn-blue:hover{
-  background:#0C447C;
+  background:#0E4A84;
 }
 
 .btn-green{
-  background:#3B6D11;
+  background:#4E8F1F;
   color:white;
+}
+
+.btn-green:hover{
+  background:#3E7317;
+}
+
+.btn-amber{
+  background:#A86A09;
+  color:white;
+  width:40px;
+  height:40px;
+  padding:0;
 }
 
 .btn-red{
-  background:#A32D2D;
+  background:#B92E2E;
   color:white;
-}
-
-.btn-gray{
-  background:#f5f7fa;
-  border:1px solid #cdd5e0;
+  width:40px;
+  height:40px;
+  padding:0;
 }
 
 .toolbar{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  align-items:center;
   background:white;
-  padding:10px 14px;
-  border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.06);
-  margin-bottom:12px;
+  border-radius:16px;
+  padding:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+  margin-bottom:14px;
 }
 
 .search-wrap{
   flex:1;
+  position:relative;
 }
 
 .search-wrap input{
   width:100%;
-  padding:10px 12px;
-  border:1px solid #cdd5e0;
-  border-radius:8px;
+  padding:13px 14px 13px 44px;
+  border:1px solid #D7E0EA;
+  border-radius:12px;
+  font-size:14px;
+}
+
+.search-icon{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#666;
 }
 
 .table-wrap{
-  background:white;
-  border-radius:10px;
   overflow:auto;
-  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  cursor:grab;
+  background:white;
+  border-radius:16px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
 }
 
 table{
   width:100%;
   border-collapse:collapse;
+  min-width:1400px;
 }
 
 thead{
@@ -115,40 +175,36 @@ thead{
 
 th{
   color:white;
-  padding:12px;
+  padding:14px;
   text-align:left;
   white-space:nowrap;
+  font-size:14px;
 }
 
 td{
-  padding:10px 12px;
-  border-bottom:1px solid #eee;
+  padding:12px 14px;
+  border-bottom:1px solid #EEF2F7;
   white-space:nowrap;
+  font-size:14px;
 }
 
 tr:hover td{
-  background:#f7f9fc;
-}
-
-.no-data{
-  text-align:center;
-  padding:40px;
-  color:#aaa;
+  background:#F7FAFD;
 }
 
 .action-btns{
   display:flex;
-  gap:4px;
+  gap:8px;
 }
 
 .modal-bg{
-  display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.5);
+  background:rgba(0,0,0,.45);
+  display:none;
   justify-content:center;
   align-items:center;
-  z-index:200;
+  z-index:1000;
 }
 
 .modal-bg.show{
@@ -157,44 +213,51 @@ tr:hover td{
 
 .modal{
   background:white;
-  border-radius:14px;
-  padding:24px;
   width:100%;
-  max-width:600px;
+  max-width:680px;
+  border-radius:18px;
+  padding:24px;
+}
+
+.modal-title{
+  font-size:22px;
+  font-weight:700;
+  margin-bottom:18px;
+  color:#185FA5;
 }
 
 .form-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:12px;
+  gap:14px;
 }
 
-.form-grid .full{
+.full{
   grid-column:1/-1;
 }
 
 .modal input{
   width:100%;
-  padding:10px;
-  border:1px solid #cdd5e0;
-  border-radius:8px;
+  padding:12px;
+  border:1px solid #D7E0EA;
+  border-radius:12px;
 }
 
 .modal-footer{
   display:flex;
   justify-content:flex-end;
-  gap:8px;
+  gap:10px;
   margin-top:20px;
 }
 
 .loading{
-  display:none;
   position:fixed;
   inset:0;
   background:rgba(255,255,255,.7);
+  display:none;
   justify-content:center;
   align-items:center;
-  z-index:300;
+  z-index:3000;
 }
 
 .loading.show{
@@ -202,9 +265,9 @@ tr:hover td{
 }
 
 .spinner{
-  width:36px;
-  height:36px;
-  border:3px solid #ddd;
+  width:44px;
+  height:44px;
+  border:4px solid #ddd;
   border-top-color:#185FA5;
   border-radius:50%;
   animation:spin .7s linear infinite;
@@ -215,6 +278,11 @@ tr:hover td{
     transform:rotate(360deg);
   }
 }
+
+.material-symbols-outlined{
+  font-size:20px;
+}
+
 </style>
 </head>
 
@@ -224,11 +292,27 @@ tr:hover td{
 
   <div class="topbar">
 
-    <div class="logo-text">
-      ระบบข้อมูลพนักงาน
+    <div class="top-left">
+
+      <div class="logo-box">
+        <span class="material-symbols-outlined">
+          inventory_2
+        </span>
+      </div>
+
+      <div class="logo-title">
+        ระบบข้อมูลพนักงาน
+      </div>
+
     </div>
 
-    <button class="btn btn-gray" onclick="logout()">
+    <button
+      class="btn btn-gray"
+      onclick="logout()"
+    >
+      <span class="material-symbols-outlined">
+        logout
+      </span>
       ออกจากระบบ
     </button>
 
@@ -237,19 +321,37 @@ tr:hover td{
   <div class="toolbar">
 
     <div class="search-wrap">
+
+      <span class="material-symbols-outlined search-icon">
+        search
+      </span>
+
       <input
         type="text"
         id="searchInput"
-        placeholder="ค้นหา..."
+        placeholder="ค้นหา รหัส / ชื่อ / ชื่อเล่น / เบอร์..."
         oninput="filterTable()"
       >
+
     </div>
 
-    <button class="btn btn-blue" onclick="loadAll()">
-      รีเฟรช
+    <button
+      class="btn btn-blue"
+      onclick="loadAll()"
+    >
+      <span class="material-symbols-outlined">
+        table_rows
+      </span>
+      ดูทั้งหมด
     </button>
 
-    <button class="btn btn-green" onclick="openAdd()">
+    <button
+      class="btn btn-green"
+      onclick="openAdd()"
+    >
+      <span class="material-symbols-outlined">
+        person_add
+      </span>
       เพิ่มพนักงาน
     </button>
 
@@ -263,23 +365,19 @@ tr:hover td{
         <tr>
           <th>จัดการ</th>
           <th>รหัส</th>
-          <th>ชื่อ</th>
+          <th>ชื่อ-นามสกุล</th>
           <th>ชื่อเล่น</th>
           <th>เบอร์โทร</th>
-          <th>ฉุกเฉิน 1</th>
-          <th>เบอร์</th>
-          <th>ฉุกเฉิน 2</th>
-          <th>เบอร์</th>
+          <th>ผู้ติดต่อฉุกเฉิน 1</th>
+          <th>ความสัมพันธ์</th>
+          <th>เบอร์ฉุกเฉิน 1</th>
+          <th>ผู้ติดต่อฉุกเฉิน 2</th>
+          <th>ความสัมพันธ์</th>
+          <th>เบอร์ฉุกเฉิน 2</th>
         </tr>
       </thead>
 
-      <tbody id="tbody">
-        <tr>
-          <td colspan="9" class="no-data">
-            กำลังโหลดข้อมูล...
-          </td>
-        </tr>
-      </tbody>
+      <tbody id="tbody"></tbody>
 
     </table>
 
@@ -291,11 +389,9 @@ tr:hover td{
 
   <div class="modal">
 
-    <h2 id="modalTitle">
+    <div class="modal-title" id="modalTitle">
       เพิ่มพนักงาน
-    </h2>
-
-    <br>
+    </div>
 
     <div class="form-grid">
 
@@ -343,11 +439,17 @@ tr:hover td{
 
     <div class="modal-footer">
 
-      <button class="btn btn-gray" onclick="closeModal()">
+      <button
+        class="btn btn-gray"
+        onclick="closeModal()"
+      >
         ยกเลิก
       </button>
 
-      <button class="btn btn-blue" onclick="saveEmployee()">
+      <button
+        class="btn btn-blue"
+        onclick="saveEmployee()"
+      >
         บันทึก
       </button>
 
@@ -376,6 +478,7 @@ let isAdding=true;
 let currentRow=null;
 
 function showLoading(v){
+
   document
     .getElementById("loading")
     .classList[v?"add":"remove"]("show");
@@ -383,12 +486,12 @@ function showLoading(v){
 
 async function api(url,method="GET",body=null){
 
-  const res=await fetch(url,{
+  const res = await fetch(url,{
     method,
     headers:{
       "Content-Type":"application/json",
       "Authorization":
-        "Bearer "+localStorage.getItem("token")
+        "Bearer " + localStorage.getItem("token")
     },
     body:body?JSON.stringify(body):null
   });
@@ -402,10 +505,11 @@ async function loadAll(){
 
   try{
 
-    const result=
+    const result =
       await api("/api/getAll");
 
-    allEmployees=result.data||[];
+    allEmployees =
+      result.data || [];
 
     renderTable(allEmployees);
 
@@ -419,14 +523,14 @@ async function loadAll(){
 
 function renderTable(data){
 
-  const tbody=
+  const tbody =
     document.getElementById("tbody");
 
   if(!data.length){
 
-    tbody.innerHTML=`
+    tbody.innerHTML = `
       <tr>
-        <td colspan="9" class="no-data">
+        <td colspan="11" style="text-align:center;padding:40px">
           ไม่พบข้อมูล
         </td>
       </tr>
@@ -435,8 +539,8 @@ function renderTable(data){
     return;
   }
 
-  tbody.innerHTML=data.map(d=>`
-  
+  tbody.innerHTML = data.map(d=>`
+
     <tr>
 
       <td>
@@ -444,17 +548,21 @@ function renderTable(data){
         <div class="action-btns">
 
           <button
-            class="btn btn-blue"
+            class="btn btn-amber"
             onclick="openEdit('${d.id}')"
           >
-            แก้ไข
+            <span class="material-symbols-outlined">
+              edit
+            </span>
           </button>
 
           <button
             class="btn btn-red"
             onclick="delEmployee('${d.id}',${d.row})"
           >
-            ลบ
+            <span class="material-symbols-outlined">
+              delete
+            </span>
           </button>
 
         </div>
@@ -466,8 +574,10 @@ function renderTable(data){
       <td>${d.nickname||""}</td>
       <td>${d.phone||""}</td>
       <td>${d.ec1_name||""}</td>
+      <td>${d.ec1_relation||""}</td>
       <td>${d.ec1_phone||""}</td>
       <td>${d.ec2_name||""}</td>
+      <td>${d.ec2_relation||""}</td>
       <td>${d.ec2_phone||""}</td>
 
     </tr>
@@ -477,18 +587,18 @@ function renderTable(data){
 
 function filterTable(){
 
-  const q=
+  const q =
     document
     .getElementById("searchInput")
     .value
     .toLowerCase();
 
-  const filtered=
+  const filtered =
     allEmployees.filter(e=>
 
-      (e.id||"").toLowerCase().includes(q)||
-      (e.name||"").toLowerCase().includes(q)||
-      (e.nickname||"").toLowerCase().includes(q)||
+      (e.id||"").toLowerCase().includes(q) ||
+      (e.name||"").toLowerCase().includes(q) ||
+      (e.nickname||"").toLowerCase().includes(q) ||
       (e.phone||"").toLowerCase().includes(q)
     );
 
@@ -497,13 +607,12 @@ function filterTable(){
 
 function openAdd(){
 
-  isAdding=true;
+  isAdding = true;
 
-  currentRow=null;
+  currentRow = null;
 
-  document
-    .getElementById("modalTitle")
-    .innerText="เพิ่มพนักงาน";
+  modalTitle.innerText =
+    "เพิ่มพนักงาน";
 
   [
     "fId",
@@ -521,25 +630,22 @@ function openAdd(){
     document.getElementById(id).value="";
   });
 
-  document
-    .getElementById("modal")
-    .classList.add("show");
+  modal.classList.add("show");
 }
 
 function openEdit(id){
 
-  const e=
+  const e =
     allEmployees.find(x=>x.id==id);
 
   if(!e)return;
 
-  isAdding=false;
+  isAdding = false;
 
-  currentRow=e.row;
+  currentRow = e.row;
 
-  document
-    .getElementById("modalTitle")
-    .innerText="แก้ไขข้อมูล";
+  modalTitle.innerText =
+    "แก้ไขข้อมูล";
 
   fId.value=e.id||"";
   fName.value=e.name||"";
@@ -552,21 +658,17 @@ function openEdit(id){
   fEc2Rel.value=e.ec2_relation||"";
   fEc2Phone.value=e.ec2_phone||"";
 
-  document
-    .getElementById("modal")
-    .classList.add("show");
+  modal.classList.add("show");
 }
 
 function closeModal(){
 
-  document
-    .getElementById("modal")
-    .classList.remove("show");
+  modal.classList.remove("show");
 }
 
 async function saveEmployee(){
 
-  const data={
+  const data = {
 
     id:fId.value.trim(),
     name:fName.value.trim(),
@@ -588,18 +690,19 @@ async function saveEmployee(){
 
   try{
 
-    const res=await api(
+    const res =
+      await api(
 
-      isAdding
-      ?"/api/add"
-      :"/api/update",
+        isAdding
+        ? "/api/add"
+        : "/api/update",
 
-      "POST",
+        "POST",
 
-      data
-    );
+        data
+      );
 
-    alert(res.success||res.error);
+    alert(res.success || res.error);
 
     if(res.success){
 
@@ -625,13 +728,14 @@ async function delEmployee(id,row){
 
   try{
 
-    const res=await api(
-      "/api/delete",
-      "POST",
-      {id,row}
-    );
+    const res =
+      await api(
+        "/api/delete",
+        "POST",
+        {id,row}
+      );
 
-    alert(res.success||res.error);
+    alert(res.success || res.error);
 
     if(res.success){
 
@@ -655,9 +759,61 @@ function logout(){
   location.href="/admin.html";
 }
 
+function initDragScroll(){
+
+  const slider =
+    document.querySelector(".table-wrap");
+
+  if(!slider)return;
+
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  slider.addEventListener("mousedown",(e)=>{
+
+    isDown = true;
+
+    startX =
+      e.pageX - slider.offsetLeft;
+
+    scrollLeft =
+      slider.scrollLeft;
+  });
+
+  slider.addEventListener("mouseleave",()=>{
+
+    isDown = false;
+  });
+
+  slider.addEventListener("mouseup",()=>{
+
+    isDown = false;
+  });
+
+  slider.addEventListener("mousemove",(e)=>{
+
+    if(!isDown)return;
+
+    e.preventDefault();
+
+    const x =
+      e.pageX - slider.offsetLeft;
+
+    const walk =
+      (x - startX) * 1.5;
+
+    slider.scrollLeft =
+      scrollLeft - walk;
+  });
+}
+
+initDragScroll();
+
 loadAll();
 
 </script>
 
 </body>
 </html>
+```
