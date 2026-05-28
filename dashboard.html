@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:'Sarabun',sans-serif;
+  background:#f0f4f8;
+  color:#333;
+}
+
+.container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:16px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:white;
+  padding:12px 16px;
+  border-radius:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  margin-bottom:12px;
+}
+
+.logo-text{
+  font-size:18px;
+  font-weight:600;
+  color:#185FA5;
+}
+
+.btn{
+  padding:9px 16px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:600;
+}
+
+.btn-blue{
+  background:#185FA5;
+  color:white;
+}
+
+.btn-blue:hover{
+  background:#0C447C;
+}
+
+.btn-green{
+  background:#3B6D11;
+  color:white;
+}
+
+.btn-red{
+  background:#A32D2D;
+  color:white;
+}
+
+.btn-gray{
+  background:#f5f7fa;
+  border:1px solid #cdd5e0;
+}
+
+.toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center;
+  background:white;
+  padding:10px 14px;
+  border-radius:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  margin-bottom:12px;
+}
+
+.search-wrap{
+  flex:1;
+}
+
+.search-wrap input{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid #cdd5e0;
+  border-radius:8px;
+}
+
+.table-wrap{
+  background:white;
+  border-radius:10px;
+  overflow:auto;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+thead{
+  background:#185FA5;
+}
+
+th{
+  color:white;
+  padding:12px;
+  text-align:left;
+  white-space:nowrap;
+}
+
+td{
+  padding:10px 12px;
+  border-bottom:1px solid #eee;
+  white-space:nowrap;
+}
+
+tr:hover td{
+  background:#f7f9fc;
+}
+
+.no-data{
+  text-align:center;
+  padding:40px;
+  color:#aaa;
+}
+
+.action-btns{
+  display:flex;
+  gap:4px;
+}
+
+.modal-bg{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  justify-content:center;
+  align-items:center;
+  z-index:200;
+}
+
+.modal-bg.show{
+  display:flex;
+}
+
+.modal{
+  background:white;
+  border-radius:14px;
+  padding:24px;
+  width:100%;
+  max-width:600px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.form-grid .full{
+  grid-column:1/-1;
+}
+
+.modal input{
+  width:100%;
+  padding:10px;
+  border:1px solid #cdd5e0;
+  border-radius:8px;
+}
+
+.modal-footer{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:20px;
+}
+
+.loading{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(255,255,255,.7);
+  justify-content:center;
+  align-items:center;
+  z-index:300;
+}
+
+.loading.show{
+  display:flex;
+}
+
+.spinner{
+  width:36px;
+  height:36px;
+  border:3px solid #ddd;
+  border-top-color:#185FA5;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="topbar">
+
+    <div class="logo-text">
+      ระบบข้อมูลพนักงาน
+    </div>
+
+    <button class="btn btn-gray" onclick="logout()">
+      ออกจากระบบ
+    </button>
+
+  </div>
+
+  <div class="toolbar">
+
+    <div class="search-wrap">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="ค้นหา..."
+        oninput="filterTable()"
+      >
+    </div>
+
+    <button class="btn btn-blue" onclick="loadAll()">
+      รีเฟรช
+    </button>
+
+    <button class="btn btn-green" onclick="openAdd()">
+      เพิ่มพนักงาน
+    </button>
+
+  </div>
+
+  <div class="table-wrap">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>จัดการ</th>
+          <th>รหัส</th>
+          <th>ชื่อ</th>
+          <th>ชื่อเล่น</th>
+          <th>เบอร์โทร</th>
+          <th>ฉุกเฉิน 1</th>
+          <th>เบอร์</th>
+          <th>ฉุกเฉิน 2</th>
+          <th>เบอร์</th>
+        </tr>
+      </thead>
+
+      <tbody id="tbody">
+        <tr>
+          <td colspan="9" class="no-data">
+            กำลังโหลดข้อมูล...
+          </td>
+        </tr>
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<div class="modal-bg" id="modal">
+
+  <div class="modal">
+
+    <h2 id="modalTitle">
+      เพิ่มพนักงาน
+    </h2>
+
+    <br>
+
+    <div class="form-grid">
+
+      <div>
+        <input id="fId" placeholder="รหัสพนักงาน">
+      </div>
+
+      <div>
+        <input id="fNickname" placeholder="ชื่อเล่น">
+      </div>
+
+      <div class="full">
+        <input id="fName" placeholder="ชื่อเต็ม">
+      </div>
+
+      <div class="full">
+        <input id="fPhone" placeholder="เบอร์โทร">
+      </div>
+
+      <div class="full">
+        <input id="fEc1Name" placeholder="ผู้ติดต่อฉุกเฉิน 1">
+      </div>
+
+      <div>
+        <input id="fEc1Rel" placeholder="ความสัมพันธ์">
+      </div>
+
+      <div>
+        <input id="fEc1Phone" placeholder="เบอร์">
+      </div>
+
+      <div class="full">
+        <input id="fEc2Name" placeholder="ผู้ติดต่อฉุกเฉิน 2">
+      </div>
+
+      <div>
+        <input id="fEc2Rel" placeholder="ความสัมพันธ์">
+      </div>
+
+      <div>
+        <input id="fEc2Phone" placeholder="เบอร์">
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button class="btn btn-gray" onclick="closeModal()">
+        ยกเลิก
+      </button>
+
+      <button class="btn btn-blue" onclick="saveEmployee()">
+        บันทึก
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+</div>
+
+<script>
+
+const session =
+  JSON.parse(localStorage.getItem("session"));
+
+if(!session || session.role !== "admin"){
+
+  location.href="/admin.html";
+}
+
+let allEmployees=[];
+let isAdding=true;
+let currentRow=null;
+
+function showLoading(v){
+  document
+    .getElementById("loading")
+    .classList[v?"add":"remove"]("show");
+}
+
+async function api(url,method="GET",body=null){
+
+  const res=await fetch(url,{
+    method,
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":
+        "Bearer "+localStorage.getItem("token")
+    },
+    body:body?JSON.stringify(body):null
+  });
+
+  return res.json();
+}
+
+async function loadAll(){
+
+  showLoading(true);
+
+  try{
+
+    const result=
+      await api("/api/getAll");
+
+    allEmployees=result.data||[];
+
+    renderTable(allEmployees);
+
+  }catch(e){
+
+    alert("โหลดข้อมูลไม่ได้");
+  }
+
+  showLoading(false);
+}
+
+function renderTable(data){
+
+  const tbody=
+    document.getElementById("tbody");
+
+  if(!data.length){
+
+    tbody.innerHTML=`
+      <tr>
+        <td colspan="9" class="no-data">
+          ไม่พบข้อมูล
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  tbody.innerHTML=data.map(d=>`
+  
+    <tr>
+
+      <td>
+
+        <div class="action-btns">
+
+          <button
+            class="btn btn-blue"
+            onclick="openEdit('${d.id}')"
+          >
+            แก้ไข
+          </button>
+
+          <button
+            class="btn btn-red"
+            onclick="delEmployee('${d.id}',${d.row})"
+          >
+            ลบ
+          </button>
+
+        </div>
+
+      </td>
+
+      <td>${d.id||""}</td>
+      <td>${d.name||""}</td>
+      <td>${d.nickname||""}</td>
+      <td>${d.phone||""}</td>
+      <td>${d.ec1_name||""}</td>
+      <td>${d.ec1_phone||""}</td>
+      <td>${d.ec2_name||""}</td>
+      <td>${d.ec2_phone||""}</td>
+
+    </tr>
+
+  `).join("");
+}
+
+function filterTable(){
+
+  const q=
+    document
+    .getElementById("searchInput")
+    .value
+    .toLowerCase();
+
+  const filtered=
+    allEmployees.filter(e=>
+
+      (e.id||"").toLowerCase().includes(q)||
+      (e.name||"").toLowerCase().includes(q)||
+      (e.nickname||"").toLowerCase().includes(q)||
+      (e.phone||"").toLowerCase().includes(q)
+    );
+
+  renderTable(filtered);
+}
+
+function openAdd(){
+
+  isAdding=true;
+
+  currentRow=null;
+
+  document
+    .getElementById("modalTitle")
+    .innerText="เพิ่มพนักงาน";
+
+  [
+    "fId",
+    "fName",
+    "fNickname",
+    "fPhone",
+    "fEc1Name",
+    "fEc1Rel",
+    "fEc1Phone",
+    "fEc2Name",
+    "fEc2Rel",
+    "fEc2Phone"
+  ].forEach(id=>{
+
+    document.getElementById(id).value="";
+  });
+
+  document
+    .getElementById("modal")
+    .classList.add("show");
+}
+
+function openEdit(id){
+
+  const e=
+    allEmployees.find(x=>x.id==id);
+
+  if(!e)return;
+
+  isAdding=false;
+
+  currentRow=e.row;
+
+  document
+    .getElementById("modalTitle")
+    .innerText="แก้ไขข้อมูล";
+
+  fId.value=e.id||"";
+  fName.value=e.name||"";
+  fNickname.value=e.nickname||"";
+  fPhone.value=e.phone||"";
+  fEc1Name.value=e.ec1_name||"";
+  fEc1Rel.value=e.ec1_relation||"";
+  fEc1Phone.value=e.ec1_phone||"";
+  fEc2Name.value=e.ec2_name||"";
+  fEc2Rel.value=e.ec2_relation||"";
+  fEc2Phone.value=e.ec2_phone||"";
+
+  document
+    .getElementById("modal")
+    .classList.add("show");
+}
+
+function closeModal(){
+
+  document
+    .getElementById("modal")
+    .classList.remove("show");
+}
+
+async function saveEmployee(){
+
+  const data={
+
+    id:fId.value.trim(),
+    name:fName.value.trim(),
+    nickname:fNickname.value.trim(),
+    phone:fPhone.value.trim(),
+
+    ec1_name:fEc1Name.value.trim(),
+    ec1_relation:fEc1Rel.value.trim(),
+    ec1_phone:fEc1Phone.value.trim(),
+
+    ec2_name:fEc2Name.value.trim(),
+    ec2_relation:fEc2Rel.value.trim(),
+    ec2_phone:fEc2Phone.value.trim(),
+
+    row:currentRow
+  };
+
+  showLoading(true);
+
+  try{
+
+    const res=await api(
+
+      isAdding
+      ?"/api/add"
+      :"/api/update",
+
+      "POST",
+
+      data
+    );
+
+    alert(res.success||res.error);
+
+    if(res.success){
+
+      closeModal();
+
+      loadAll();
+    }
+
+  }catch(e){
+
+    alert("เกิดข้อผิดพลาด");
+  }
+
+  showLoading(false);
+}
+
+async function delEmployee(id,row){
+
+  if(!confirm("ลบพนักงาน "+id+" ?"))
+    return;
+
+  showLoading(true);
+
+  try{
+
+    const res=await api(
+      "/api/delete",
+      "POST",
+      {id,row}
+    );
+
+    alert(res.success||res.error);
+
+    if(res.success){
+
+      loadAll();
+    }
+
+  }catch(e){
+
+    alert("เกิดข้อผิดพลาด");
+  }
+
+  showLoading(false);
+}
+
+function logout(){
+
+  localStorage.removeItem("session");
+
+  localStorage.removeItem("token");
+
+  location.href="/admin.html";
+}
+
+loadAll();
+
+</script>
+
+</body>
+</html>

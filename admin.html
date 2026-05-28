@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Login</title>
+
+<style>
+
+body{
+  font-family:Sarabun,sans-serif;
+  background:#f0f4f8;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  margin:0;
+}
+
+.login-box{
+  background:white;
+  width:100%;
+  max-width:400px;
+  padding:30px;
+  border-radius:14px;
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+}
+
+h2{
+  color:#185FA5;
+  margin-bottom:10px;
+}
+
+p{
+  color:#666;
+  margin-bottom:20px;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  margin-bottom:14px;
+  box-sizing:border-box;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  background:#185FA5;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#0C447C;
+}
+
+.error{
+  color:red;
+  margin-top:10px;
+  display:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+  <h2>Admin Login</h2>
+
+  <p>กรอกรหัสผ่านสำหรับผู้ดูแลระบบ</p>
+
+  <input
+    type="password"
+    id="adminPwd"
+    placeholder="รหัสผ่าน"
+    onkeydown="if(event.key==='Enter') loginAdmin()"
+  >
+
+  <button onclick="loginAdmin()">
+    เข้าสู่ระบบ
+  </button>
+
+  <div class="error" id="error">
+    รหัสผ่านไม่ถูกต้อง
+  </div>
+
+</div>
+
+<script>
+
+/* ===== API ===== */
+async function api(url,method="GET",body=null){
+
+  const res = await fetch(url,{
+    method,
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body: body ? JSON.stringify(body) : null
+  });
+
+  return res.json();
+}
+
+/* ===== CHECK SESSION ===== */
+const session =
+  JSON.parse(localStorage.getItem("session"));
+
+if(session && session.role === "admin"){
+
+  location.href = "/dashboard.html";
+}
+
+/* ===== LOGIN ===== */
+async function loginAdmin(){
+
+  const password =
+    document.getElementById("adminPwd").value.trim();
+
+  if(!password){
+
+    alert("กรอกรหัสผ่าน");
+
+    return;
+  }
+
+  document.getElementById("error").style.display="none";
+
+  try{
+
+    const result = await api(
+      "/api/checkAdmin",
+      "POST",
+      {
+        password
+      }
+    );
+
+    if(!result || !result.ok){
+
+      document.getElementById("error").style.display="block";
+
+      return;
+    }
+
+    localStorage.setItem(
+      "token",
+      result.token
+    );
+
+    localStorage.setItem(
+      "session",
+      JSON.stringify({
+        role:"admin"
+      })
+    );
+
+    location.href = "/dashboard.html";
+
+  }catch(e){
+
+    console.error(e);
+
+    alert("เกิดข้อผิดพลาด");
+  }
+}
+
+</script>
+
+</body>
+</html>
