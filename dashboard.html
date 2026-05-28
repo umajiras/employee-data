@@ -262,7 +262,11 @@ function setupMainScreen(emp=null){
 
 /* ===== LOGOUT ===== */
 function logout(){
+
   localStorage.removeItem("session");
+
+  localStorage.removeItem("token");
+
   location.reload();
 }
 
@@ -644,11 +648,10 @@ function initDragScroll(){
 /* ===== INIT ===== */
 window.onload = () => {
 
-  const session =
-    JSON.parse(localStorage.getItem("session"));
+  const token =
+    localStorage.getItem("token");
 
-  // ยังไม่ได้ login admin
-  if(!session || session.role !== "admin"){
+  if(!token){
 
     location.href = "/admin.html";
 
