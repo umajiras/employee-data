@@ -230,7 +230,6 @@ tr:hover td { background: #f7f9fc; }
 
 <script>
 let currentRole = null;
-let adminPassword = null;
 let currentEmpId = null;
 let currentEmpPhone = null;
 let currentRow = null;
@@ -321,69 +320,13 @@ async function loginEmployee(){
   showLoading(true);
   try{
     const emp=await api("/api/login","POST",{id,phone});
+    console.log(emp);
     showLoading(false);
-    if(!emp){document.getElementById("empError").style.display="block";return;}
+    if(!emp || !emp.id){document.getElementById("empError").style.display="block";return;}
     currentRole="employee";currentEmpId=id;currentEmpPhone=phone;
     localStorage.setItem("session",JSON.stringify({role:"employee",id,phone}));
     setupMainScreen(emp);
   }catch(e){showLoading(false);alert("เกิดข้อผิดพลาด กรุณาลองใหม่");console.error(e);}
-}
-
-/* ===== LOGIN ADMIN ===== */
-async function loginAdmin(){
-
-  const pwd = adminPwd.value;
-
-  if(!pwd){
-    alert("กรอกรหัสผ่านก่อน");
-    return;
-  }
-
-  document.getElementById("adminError").style.display = "none";
-
-  showLoading(true);
-
-  try{
-
-    const result = await api(
-      "/api/checkAdmin",
-      "POST",
-      { password: pwd }
-    );
-
-    showLoading(false);
-
-    if(!result || !result.ok){
-      document.getElementById("adminError").style.display = "block";
-      return;
-    }
-
-    currentRole = "admin";
-
-    localStorage.setItem(
-      "session",
-      JSON.stringify({
-        role:"admin"
-      })
-    );
-
-    localStorage.setItem(
-      "token",
-      result.token
-    );
-
-    setupMainScreen();
-
-    loadAll();
-
-  }catch(e){
-
-    showLoading(false);
-
-    alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
-
-    console.error(e);
-  }
 }
 
 /* ===== LOAD ALL ===== */
@@ -493,7 +436,6 @@ async function saveEmployee(){
     ec2_relation: fEc2Rel.value.trim(),
     ec2_phone: fEc2Phone.value.trim(),
     row: currentRow,
-    password: adminPassword
   };
 
   // ✅ บังคับกรอกทุกช่อง
@@ -537,7 +479,6 @@ async function saveEmployee(){
     // 🔥 แยก add กับ update
     if(isAdding){
       body = {
-        password: adminPassword,
         data: {
           id: data.id,
           name: data.name,
@@ -600,7 +541,7 @@ async function delEmployee(id,row){
   if(!confirm("ลบพนักงานรหัส "+id+" ?"))return;
   showLoading(true);
   try{
-    const res=await api("/api/delete","POST",{id,row,password:adminPassword});
+    const res=await api("/api/delete","POST",{id,row});
     showLoading(false);
     alert(res.success||res.error);
     if(res.success) loadAll();
@@ -646,7 +587,13 @@ function loadSession(){
 
       }else{
 
-        showScreen("screenEmployee");
+          localStorage.removeItem("session");
+
+          localStorage.removeItem("token");
+
+          showScreen("screenEmployee");
+
+          document.body.style.display = "block";
       }
 
       document.body.style.display = "block";
@@ -654,11 +601,13 @@ function loadSession(){
 
   }else{
 
-    localStorage.removeItem("session");
+      localStorage.removeItem("session");
 
-    showScreen("screenEmployee");
+      localStorage.removeItem("token");
 
-    document.body.style.display = "block";
+      showScreen("screenEmployee");
+
+      document.body.style.display = "block";
   }
 }
 

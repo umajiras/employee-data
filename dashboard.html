@@ -207,7 +207,6 @@ tr:hover td { background: #f7f9fc; }
 
 <script>
 let currentRole = null;
-let adminPassword = null;
 let currentEmpId = null;
 let currentEmpPhone = null;
 let currentRow = null;
@@ -449,7 +448,6 @@ async function saveEmployee(){
     ec2_relation: fEc2Rel.value.trim(),
     ec2_phone: fEc2Phone.value.trim(),
     row: currentRow,
-    password: adminPassword
   };
 
   // ✅ บังคับกรอกทุกช่อง
@@ -493,7 +491,6 @@ async function saveEmployee(){
     // 🔥 แยก add กับ update
     if(isAdding){
       body = {
-        password: adminPassword,
         data: {
           id: data.id,
           name: data.name,
@@ -556,7 +553,7 @@ async function delEmployee(id,row){
   if(!confirm("ลบพนักงานรหัส "+id+" ?"))return;
   showLoading(true);
   try{
-    const res=await api("/api/delete","POST",{id,row,password:adminPassword});
+    const res=await api("/api/delete","POST",{id,row});
     showLoading(false);
     alert(res.success||res.error);
     if(res.success) loadAll();
@@ -589,13 +586,26 @@ function loadSession(){
       });
 
   }else{
-    currentRole="admin";
-    adminPassword=s.password;
 
-    setupMainScreen();
-    loadAll();
+      const token =
+        localStorage.getItem("token");
 
-    document.body.style.display = "block"; // 👈 admin ก็โชว์ตรงนี้
+      if(!token){
+
+        localStorage.removeItem("session");
+
+        location.href = "/admin.html";
+
+        return;
+      }
+
+      currentRole = "admin";
+
+      setupMainScreen();
+
+      loadAll();
+
+      document.body.style.display = "block";
   }
 }
 
@@ -648,38 +658,9 @@ function initDragScroll(){
 /* ===== INIT ===== */
 window.onload = () => {
 
-  const token =
-    localStorage.getItem("token");
-
-  if(!token){
-
-    location.href = "/admin.html";
-
-    return;
-  }
-
-  // admin mode
-  currentRole = "admin";
-
-  // badge admin
-  document.getElementById("roleBadge").innerText =
-    "ADMIN";
-
-  document.getElementById("roleBadge").className =
-    "badge badge-admin";
-
-  // แสดง toolbar admin
-  document.getElementById("adminBar")
-    .classList.remove("hidden");
-
-  // drag scroll
   initDragScroll();
 
-  // โหลดข้อมูล
-  loadAll();
-
-  // แสดงหน้า
-  document.body.style.display = "block";
+  loadSession();
 };
 
 
