@@ -233,10 +233,13 @@ async function api(url, method="GET", body=null){
 
 /* ===== SCREENS ===== */
 function showScreen(id){
-  ["screenChoice","screenEmployee","screenAdmin","screenMain"].forEach(s=>{
-    document.getElementById(s).classList.add("hidden");
-  });
-  document.getElementById(id).classList.remove("hidden");
+
+  const target =
+    document.getElementById(id);
+
+  if(target){
+    target.classList.remove("hidden");
+  }
 }
 
 /* ===== SETUP MAIN ===== */
@@ -564,7 +567,7 @@ async function delEmployee(id,row){
 function loadSession(){
   const s = JSON.parse(localStorage.getItem("session"));
   if(!s){
-    showScreen("screenChoice");
+    location.href = "/";
     document.body.style.display = "block";
     return;
   }
@@ -580,7 +583,7 @@ function loadSession(){
           setupMainScreen(emp);
         }else{
           localStorage.removeItem("session");
-          showScreen("screenChoice");
+          location.href = "/";
         }
         document.body.style.display = "block"; // 👈 โชว์ตรงนี้
       });
